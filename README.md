@@ -20,4 +20,5 @@ Variáveis independentes:
 - Número de postos de controlo
 - Capacidade máxima de cada posto
 - Tempo de verificação de uma mala
+- Probabilidade de mala ser irregular
 
