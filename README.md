@@ -20,5 +20,5 @@ O Agente Gestor de Fila verificará a pessoa que se encontra à frente da fila e
 
  O Agente Controlo de Pessoas limita-se a responder aos pedidos feitos pelos outros agentes e introduz um tempo constante ao tempo total de espera de uma pessoa.
  
- Por fim, o Agente Inspector de mala tem como função verificar manualmente as malas, exporadicamente solicitadas pelos postos de Controlo de Mala. Como se trata de um serviço exporádico, assume-se que pode andar por qualquer ponto do aeroporto, sendo necessário calcular o que se encontra mais perto do pedido solicitado. O tempo de verificação manual, introduz um tempo constante e directamente proporcional ao número de malas a ser verificadas ao tempo de espera de uma pessoa.
+ Por fim, o Agente Inspetor de Irregularidades tem como função verificar manualmente as malas, exporadicamente solicitadas pelos postos de Controlo de Mala. Como se trata de um serviço exporádico, assume-se que pode andar por qualquer ponto do aeroporto, sendo necessário calcular o que se encontra mais perto do pedido solicitado. O tempo de verificação manual, introduz um tempo constante e directamente proporcional ao número de malas a ser verificadas ao tempo de espera de uma pessoa.
 
