@@ -12,7 +12,7 @@ O Agente Gestor de Fila verificará a pessoa que se encontra à frente da fila e
 
 - Caso a pessoa em questão não possua nenhuma mala, questiona os Controlo de Pessoas para saber qual deles está mais livre (menor número de pessoas na fila) e, sucessivamente, envia a pessoa para esse posto. A resposta dos agentes de Controlo de Pessoas ao Gestor de Fila inclui unicamente o número de pessoas na fila. 
 
- O Agente Controlo de Mala, durante o processo de verificação e mala poderá demonstrar dois comportamentos: 
+ O Agente Controlo de Mala, introduz um tempo constante e proporcional ao tamanho da mala (assume-se que uma mala de porão equivale a 2 malas de cabine). Para além disso, durante o processo de verificação da mala, poderá demonstrar dois comportamentos: 
  
 - Caso haja alguma irregularidade na mala, solicita-se o Inspector de Irregularidades que se encontra mais próximo.
  
