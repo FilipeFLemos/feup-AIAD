@@ -8,9 +8,10 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetResponder;
 import utils.Utils;
+
+import java.io.IOException;
 
 public class LuggageAgent extends Agent {
 
@@ -54,9 +55,15 @@ public class LuggageAgent extends Agent {
                 luggageAgent.queueManager = cfp.getSender();
             }
 
+            Integer freeSpace = trailFreeSpace;
+
             ACLMessage reply = cfp.createReply();
             reply.setPerformative(ACLMessage.PROPOSE);
-            reply.setContent("I have space for " + trailFreeSpace + " luggage!");
+            try {
+                reply.setContentObject(freeSpace);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             return reply;
         }

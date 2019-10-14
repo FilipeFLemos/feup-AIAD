@@ -6,6 +6,10 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
+import jade.proto.ContractNetInitiator;
+import utils.Utils;
 
 import java.util.Vector;
 
@@ -54,5 +58,77 @@ public class QueueManagerAgent extends Agent {
         sd.setType(type);
         template.addServices(sd);
         return template;
+    }
+
+    public void allocatePerson() {
+        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+        msg.setContent("How many luggage can you receive?");
+        addBehaviour(new TrailSizeQuery(this, msg));
+    }
+
+    public Vector<AID> getLuggageAgents() {
+        return luggageAgents;
+    }
+
+    public Vector<AID> getPeopleScanAgents() {
+        return peopleScanAgents;
+    }
+
+    //Private class responsible for task allocation
+    private class TrailSizeQuery extends ContractNetInitiator {
+
+        TrailSizeQuery(Agent a, ACLMessage msg) {
+            super(a, msg);
+        }
+
+        @Override
+        protected Vector prepareCfps(ACLMessage cfp) {
+            Vector<ACLMessage> v = new Vector<>();
+
+            for (AID aid : ((QueueManagerAgent) myAgent).getLuggageAgents()) {
+                cfp.addReceiver(aid);
+            }
+
+            v.add(cfp);
+            return v;
+        }
+
+        @Override
+        protected void handleAllResponses(Vector responses, Vector acceptances) {
+
+            int max = Utils.MIN_SPACE;
+            for (Object response : responses) {
+                int curr = Utils.MIN_SPACE;
+                try {
+                    curr = (Integer) ((ACLMessage) response).getContentObject();
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+
+                if (curr > max) max = curr;
+            }
+
+            boolean chosen = false;
+            for (Object response : responses) {
+                ACLMessage current = (ACLMessage) response;
+                try {
+                    ACLMessage msg = current.createReply();
+                    if (!chosen && (Integer) current.getContentObject() == max) {
+                        msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                        chosen = true;
+                    } else {
+                        msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    }
+                    acceptances.add(msg);
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        protected void handleAllResultNotifications(Vector resultNotifications) {
+            //System.out.println("got " + resultNotifications.size() + " result notifs!");
+        }
     }
 }

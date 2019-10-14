@@ -6,5 +6,6 @@ public class Utils {
     public static int NUM_PEOPLE_AGENTS = 2;
     public static int NUM_INSPECTOR_AGENTS = 1;
     public static int MAX_LUGGAGE_CAPACITY = 5;
+    public static int MIN_SPACE = 0;
 
 }

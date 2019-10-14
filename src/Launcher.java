@@ -26,13 +26,15 @@ public class Launcher {
 		peopleScanAgents = new ArrayList<>();
 		inspectorAgents = new ArrayList<>();
 
-		startAgents();
-
 		try {
 			mainContainer.acceptNewAgent("myRMA", new jade.tools.rma.rma()).start();
 		} catch (StaleProxyException e) {
 			e.printStackTrace();
 		}
+
+		startAgents();
+
+		queueManagerAgent.allocatePerson();
 	}
 
 	public static void main(String[] args) {
@@ -131,7 +133,7 @@ public class Launcher {
 			inspectorAgents.add(inspectorAgent);
 		}
 
-		QueueManagerAgent queueManagerAgent = new QueueManagerAgent();
+		queueManagerAgent = new QueueManagerAgent();
 		try {
 			mainContainer.acceptNewAgent("queueManager", queueManagerAgent).start();
 		} catch (StaleProxyException e) {
