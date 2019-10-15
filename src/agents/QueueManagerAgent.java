@@ -103,16 +103,16 @@ public class QueueManagerAgent extends Agent {
         @Override
         protected void handleAllResponses(Vector responses, Vector acceptances) {
 
-            int max = Utils.MIN_SPACE;
+            int min = Utils.MAX_LUGGAGE_CAPACITY;
             for (Object response : responses) {
-                int curr = Utils.MIN_SPACE;
+                int curr = Utils.MAX_LUGGAGE_CAPACITY;
                 try {
                     curr = (Integer) ((ACLMessage) response).getContentObject();
                 } catch (UnreadableException e) {
                     e.printStackTrace();
                 }
 
-                if (curr > max) max = curr;
+                if (curr < min) min = curr;
             }
 
             boolean chosen = false;
@@ -120,7 +120,7 @@ public class QueueManagerAgent extends Agent {
                 ACLMessage current = (ACLMessage) response;
                 try {
                     ACLMessage msg = current.createReply();
-                    if (!chosen && (Integer) current.getContentObject() == max) {
+                    if (!chosen && (Integer) current.getContentObject() == min) {
                         msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                         chosen = true;
                     } else {
@@ -138,7 +138,6 @@ public class QueueManagerAgent extends Agent {
             //System.out.println("got " + resultNotifications.size() + " result notifs!");
         }
     }
-
 
     //Private class responsible for being alert to late new agents
     private class LuggageAgentSubscription extends SubscriptionInitiator {
