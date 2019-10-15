@@ -50,9 +50,8 @@ public class LuggageAgent extends Agent {
 
         @Override
         protected ACLMessage handleCfp(ACLMessage cfp) {
-            LuggageAgent luggageAgent = (LuggageAgent) myAgent;
-            if (luggageAgent.queueManager == null){
-                luggageAgent.queueManager = cfp.getSender();
+            if (queueManager == null){
+                queueManager = cfp.getSender();
             }
 
             Integer freeSpace = trailFreeSpace;
