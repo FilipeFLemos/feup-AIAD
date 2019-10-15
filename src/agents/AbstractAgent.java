@@ -5,7 +5,7 @@ import jade.core.Agent;
 
 public abstract class AbstractAgent extends Agent {
 
-    private int queueSize;
+    private int queueSize = 0;
     private AID queueManager = null;
 
 
