@@ -9,6 +9,7 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
+import jade.proto.SubscriptionInitiator;
 import utils.Utils;
 
 import java.util.Vector;
@@ -26,6 +27,7 @@ public class QueueManagerAgent extends Agent {
     @Override
     protected void setup() {
         findAgents();
+        lateAgentSubscription();
     }
 
     private void findAgents() {
@@ -58,6 +60,11 @@ public class QueueManagerAgent extends Agent {
         sd.setType(type);
         template.addServices(sd);
         return template;
+    }
+
+    private void lateAgentSubscription() {
+        DFAgentDescription template = getDFAgentDescriptionTemplate("luggage");
+        addBehaviour(new LuggageAgentSubscription(this, template));
     }
 
     public void allocatePerson() {
@@ -129,6 +136,31 @@ public class QueueManagerAgent extends Agent {
         @Override
         protected void handleAllResultNotifications(Vector resultNotifications) {
             //System.out.println("got " + resultNotifications.size() + " result notifs!");
+        }
+    }
+
+
+    //Private class responsible for being alert to late new agents
+    private class LuggageAgentSubscription extends SubscriptionInitiator {
+
+        LuggageAgentSubscription(Agent agent, DFAgentDescription dfad) {
+            super(agent, DFService.createSubscriptionMessage(agent, getDefaultDF(), dfad, null));
+        }
+
+        @Override
+        protected void handleInform(ACLMessage inform) {
+            try {
+                DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent());
+                for (DFAgentDescription dfd : dfds) {
+                    AID agent = dfd.getName();
+                    if (!luggageAgents.contains(agent)) {
+                        luggageAgents.add(agent);
+                        System.out.println("New luggage-agent in town: " + agent.getLocalName() + ", now have " + luggageAgents.size());
+                    }
+                }
+            } catch (FIPAException fe) {
+                fe.printStackTrace();
+            }
         }
     }
 }
