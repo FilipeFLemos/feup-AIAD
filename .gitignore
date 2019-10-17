@@ -81,3 +81,9 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+APDescription.txt
+MTPs-Main-Container.txt
+lib/jade.jar
+.vscode/
+.vscode/task.json
