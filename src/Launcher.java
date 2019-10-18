@@ -5,7 +5,6 @@ import agents.QueueManagerAgent;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
-import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 import utils.Utils;
@@ -34,6 +33,7 @@ public class Launcher {
 
 		startAgents();
 
+		queueManagerAgent.allocateLuggage();
 		queueManagerAgent.allocatePerson();
 	}
 
