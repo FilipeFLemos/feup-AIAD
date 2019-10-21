@@ -32,7 +32,7 @@ public class QueueManagerAgent extends Agent {
         DFAgentDescription template = Utils.getDFAgentDescriptionTemplate("luggage");
         try {
             DFAgentDescription[] result = DFService.search(this, template);
-            System.out.println("Found " + result.length + " Luggage Control Agents.");
+            System.out.println(this.getLocalName() + ": Found " + result.length + " Luggage Control Agents.");
             for (DFAgentDescription agentDescription : result) {
                 luggageAgents.add(agentDescription.getName());
             }
@@ -40,7 +40,7 @@ public class QueueManagerAgent extends Agent {
             fe.printStackTrace();
         }
 
-        peopleScanAgents = Utils.findScanAgents(this);
+        peopleScanAgents = Utils.findAvailableScanAgents(this);
     }
 
     private void acceptNewAgents() {

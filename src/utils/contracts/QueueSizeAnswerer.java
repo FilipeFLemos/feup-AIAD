@@ -18,7 +18,7 @@ public class QueueSizeAnswerer extends ContractNetResponder {
     }
 
     @Override
-    protected ACLMessage handleCfp(ACLMessage cfp) throws RefuseException, FailureException, NotUnderstoodException {
+    protected ACLMessage handleCfp(ACLMessage cfp){
         AbstractAgent abstractAgent = (AbstractAgent) myAgent;
         if (abstractAgent.getQueueManager() == null)
         {
@@ -40,12 +40,13 @@ public class QueueSizeAnswerer extends ContractNetResponder {
 
     @Override
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
-        System.out.println(myAgent.getLocalName() + " was selected to take the next person!");
 
         ACLMessage reply = accept.createReply();
         reply.setPerformative(ACLMessage.INFORM);
         reply.setContent("Will be done");
         ((AbstractAgent) myAgent).increaseQueueSize();
+
+        System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "+ cfp.getSender().getLocalName());
 
         return reply;
     }

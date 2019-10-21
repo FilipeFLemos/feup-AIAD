@@ -1,7 +1,7 @@
 package utils.contracts;
 
+import agents.InspectorAgent;
 import agents.LuggageAgent;
-import agents.QueueManagerAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -22,10 +22,23 @@ public class LateScanAgentSubscription extends SubscriptionInitiator {
             DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent());
             for (DFAgentDescription dfd : dfds) {
                 AID agent = dfd.getName();
-                LuggageAgent luggageAgent = (LuggageAgent) myAgent;
-                if (!luggageAgent.getPeopleScanAgents().contains(agent)) {
+
+                InspectorAgent inspectorAgent = null;
+                LuggageAgent luggageAgent = null;
+                if(myAgent instanceof InspectorAgent){
+                    inspectorAgent = (InspectorAgent) myAgent;
+                }
+                else{
+                    luggageAgent = (LuggageAgent) myAgent;
+                }
+
+                if (luggageAgent != null && !luggageAgent.getPeopleScanAgents().contains(agent)) {
                     luggageAgent.getPeopleScanAgents().add(agent);
-                    System.out.println("New people-scan-agent in town: " + agent.getLocalName() + ", now have " + luggageAgent.getPeopleScanAgents().size());
+                    System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + luggageAgent.getPeopleScanAgents().size());
+                }
+                else if(inspectorAgent != null && !inspectorAgent.getPeopleScanAgents().contains(agent)){
+                    inspectorAgent.getPeopleScanAgents().add(agent);
+                    System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + inspectorAgent.getPeopleScanAgents().size());
                 }
             }
         } catch (FIPAException fe) {

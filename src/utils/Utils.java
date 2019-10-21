@@ -7,6 +7,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import utils.contracts.LateScanAgentSubscription;
 import utils.contracts.LateSubscription;
 import utils.contracts.QueueSizeQuery;
 
@@ -28,13 +29,13 @@ public class Utils {
         return template;
     }
 
-    public static Vector<AID> findScanAgents(Agent agent){
+    public static Vector<AID> findAvailableScanAgents(Agent agent){
         Vector<AID> agents = new Vector<>();
 
         DFAgentDescription template = Utils.getDFAgentDescriptionTemplate("scan");
         try {
             DFAgentDescription[] result = DFService.search(agent, template);
-            System.out.println("Found " + result.length + " People Scan Agents.");
+            System.out.println(agent.getLocalName() + ": Found " + result.length + " People Scan Agents.");
             for (DFAgentDescription agentDescription : result) {
                 agents.add(agentDescription.getName());
             }
@@ -43,6 +44,11 @@ public class Utils {
         }
 
         return agents;
+    }
+
+    public static void acceptNewScanAgents(Agent agent) {
+        DFAgentDescription template = Utils.getDFAgentDescriptionTemplate("scan");
+        agent.addBehaviour(new LateScanAgentSubscription(agent, template));
     }
 
     public static void allocatePersonToBeScanned(Agent agent) {

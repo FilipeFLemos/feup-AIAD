@@ -30,13 +30,13 @@ public class LateSubscription extends SubscriptionInitiator {
                     case "luggage":
                         if (!queueManagerAgent.getLuggageAgents().contains(agent)) {
                             queueManagerAgent.getLuggageAgents().add(agent);
-                            System.out.println("New luggage-agent in town: " + agent.getLocalName() + ", now have " + queueManagerAgent.getLuggageAgents().size());
+                            System.out.println(myAgent.getLocalName() + ": New luggage-agent in town: " + agent.getLocalName() + ", now have " + queueManagerAgent.getLuggageAgents().size());
                         }
                         break;
                     case "scan":
                         if (!queueManagerAgent.getPeopleScanAgents().contains(agent)) {
                             queueManagerAgent.getPeopleScanAgents().add(agent);
-                            System.out.println("New people-scan-agent in town: " + agent.getLocalName() + ", now have " + queueManagerAgent.getPeopleScanAgents().size());
+                            System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + queueManagerAgent.getPeopleScanAgents().size());
                         }
                         break;
                 }
