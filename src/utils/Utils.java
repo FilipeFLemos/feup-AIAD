@@ -6,7 +6,9 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
 import utils.contracts.LateSubscription;
+import utils.contracts.QueueSizeQuery;
 
 import java.util.Vector;
 
@@ -41,5 +43,11 @@ public class Utils {
         }
 
         return agents;
+    }
+
+    public static void allocatePersonToBeScanned(Agent agent) {
+        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+        msg.setContent("What is your queue size?");
+        agent.addBehaviour(new QueueSizeQuery(agent, msg, "scan"));
     }
 }

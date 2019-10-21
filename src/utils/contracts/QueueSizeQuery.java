@@ -1,5 +1,6 @@
 package utils.contracts;
 
+import agents.LuggageAgent;
 import agents.QueueManagerAgent;
 import jade.core.AID;
 import jade.core.Agent;
@@ -23,6 +24,15 @@ public class QueueSizeQuery extends ContractNetInitiator {
     protected Vector prepareCfps(ACLMessage cfp) {
         Vector<ACLMessage> v = new Vector<>();
 
+        QueueManagerAgent queueManagerAgent = null;
+        LuggageAgent luggageAgent = null;
+        if(myAgent instanceof QueueManagerAgent){
+            queueManagerAgent = (QueueManagerAgent) myAgent;
+        }
+        else{
+            luggageAgent = (LuggageAgent) myAgent;
+        }
+
         switch(agentType){
             case "luggage":
                 for (AID aid : ((QueueManagerAgent) myAgent).getLuggageAgents()) {
@@ -30,9 +40,18 @@ public class QueueSizeQuery extends ContractNetInitiator {
                 }
                 break;
             case "scan":
-                for (AID aid : ((QueueManagerAgent) myAgent).getPeopleScanAgents()) {
-                    cfp.addReceiver(aid);
+
+                if(luggageAgent != null){
+                    for (AID aid : luggageAgent.getPeopleScanAgents()) {
+                        cfp.addReceiver(aid);
+                    }
                 }
+                else{
+                    for (AID aid : queueManagerAgent.getPeopleScanAgents()) {
+                        cfp.addReceiver(aid);
+                    }
+                }
+
                 break;
         }
 

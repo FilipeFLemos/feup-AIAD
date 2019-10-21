@@ -34,7 +34,7 @@ public class Launcher {
 		startAgents();
 
 		queueManagerAgent.allocateLuggage();
-		queueManagerAgent.allocatePerson();
+		Utils.allocatePersonToBeScanned(queueManagerAgent);
 	}
 
 	public static void main(String[] args) {

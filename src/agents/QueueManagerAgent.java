@@ -56,12 +56,6 @@ public class QueueManagerAgent extends Agent {
         addBehaviour(new QueueSizeQuery(this, msg, "luggage"));
     }
 
-    public void allocatePerson() {
-        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-        msg.setContent("What is your queue size?");
-        addBehaviour(new QueueSizeQuery(this, msg, "scan"));
-    }
-
     public Vector<AID> getLuggageAgents() {
         return luggageAgents;
     }

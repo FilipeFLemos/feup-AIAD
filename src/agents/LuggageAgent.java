@@ -10,6 +10,7 @@ import jade.lang.acl.MessageTemplate;
 import utils.Utils;
 import utils.contracts.LateScanAgentSubscription;
 import utils.contracts.QueueSizeAnswerer;
+import utils.contracts.QueueSizeQuery;
 
 import java.util.Vector;
 
@@ -44,6 +45,7 @@ public class LuggageAgent extends AbstractAgent {
         acceptNewScanAgents();
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        Utils.allocatePersonToBeScanned(this);
     }
 
     private void findAvailableScanAgents(){
