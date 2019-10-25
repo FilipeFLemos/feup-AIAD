@@ -29,6 +29,7 @@ public class Utils {
         return template;
     }
 
+    /**
     public static Vector<AID> findAvailableScanAgents(Agent agent){
         Vector<AID> agents = new Vector<>();
 
@@ -46,14 +47,65 @@ public class Utils {
         return agents;
     }
 
+    public static Vector<AID> findAvailableInspectorAgents(Agent agent){
+        Vector<AID> agents = new Vector<>();
+
+        DFAgentDescription template = Utils.getDFAgentDescriptionTemplate("inspector");
+        try {
+            DFAgentDescription[] result = DFService.search(agent, template);
+            System.out.println(agent.getLocalName() + ": Found " + result.length + " Inspector Agents.");
+            for (DFAgentDescription agentDescription : result) {
+                agents.add(agentDescription.getName());
+            }
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+
+        return agents;
+    }
+    **/
+
+    public static Vector<AID> findAvailableAgents(Agent agent, String type){
+        Vector<AID> agents = new Vector<>();
+
+        DFAgentDescription template = Utils.getDFAgentDescriptionTemplate(type);
+        try {
+            DFAgentDescription[] result = DFService.search(agent, template);
+            System.out.println(agent.getLocalName() + ": Found " + result.length + " " + type + " Agents.");
+            for (DFAgentDescription agentDescription : result) {
+                agents.add(agentDescription.getName());
+            }
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+
+        return agents;
+    }
+
+
+/**
     public static void acceptNewScanAgents(Agent agent) {
         DFAgentDescription template = Utils.getDFAgentDescriptionTemplate("scan");
         agent.addBehaviour(new LateScanAgentSubscription(agent, template));
     }
+
+    public static void acceptNewInspectorAgents(Agent agent) {
+        DFAgentDescription template = Utils.getDFAgentDescriptionTemplate("inspector");
+        agent.addBehaviour(new LateScanAgentSubscription(agent, template));
+ }
+**/
+    public static void acceptNewAgents(Agent agent, String type) {
+        DFAgentDescription template = Utils.getDFAgentDescriptionTemplate(type);
+        agent.addBehaviour(new LateScanAgentSubscription(agent, template));
+    }
+
+
 
     public static void allocatePersonToBeScanned(Agent agent) {
         ACLMessage msg = new ACLMessage(ACLMessage.CFP);
         msg.setContent("What is your queue size?");
         agent.addBehaviour(new QueueSizeQuery(agent, msg, "scan"));
     }
+
+
 }

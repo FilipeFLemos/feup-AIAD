@@ -33,6 +33,7 @@ public class LateScanAgentSubscription extends SubscriptionInitiator {
                 }
 
                 if (luggageAgent != null && !luggageAgent.getPeopleScanAgents().contains(agent)) {
+
                     luggageAgent.getPeopleScanAgents().add(agent);
                     System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + luggageAgent.getPeopleScanAgents().size());
                 }

@@ -18,6 +18,7 @@ public class LuggageAgent extends AbstractAgent {
 
     private int trailFreeSpace;
     private Vector<AID> peopleScanAgents;
+    private Vector<AID> inspectorAgents;
 
     public LuggageAgent(){
         peopleScanAgents = new Vector<>();
@@ -40,8 +41,18 @@ public class LuggageAgent extends AbstractAgent {
             fe.printStackTrace();
         }
 
+        /**
         peopleScanAgents = Utils.findAvailableScanAgents(this);
         Utils.acceptNewScanAgents(this);
+
+        inspectorAgents = Utils.findAvailableInspectorAgents(this);
+        Utils.acceptNewInspectorAgents(this);
+        **/
+
+        peopleScanAgents = Utils.findAvailableAgents(this, "scan");
+        Utils.acceptNewAgents(this, "scan");
+        inspectorAgents = Utils.findAvailableAgents(this, "inspector");
+        Utils.acceptNewAgents(this, "inspector");
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
         Utils.allocatePersonToBeScanned(this);

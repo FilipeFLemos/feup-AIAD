@@ -34,8 +34,11 @@ public class InspectorAgent extends Agent {
             fe.printStackTrace();
         }
 
-        peopleScanAgents = Utils.findAvailableScanAgents(this);
-        Utils.acceptNewScanAgents(this);
+        //peopleScanAgents = Utils.findAvailableScanAgents(this);
+        //Utils.acceptNewScanAgents(this);
+
+        peopleScanAgents = Utils.findAvailableAgents(this, "scan");
+        Utils.acceptNewAgents(this, "scan");
     }
 
     public Vector<AID> getPeopleScanAgents() {

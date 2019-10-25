@@ -40,7 +40,8 @@ public class QueueManagerAgent extends Agent {
             fe.printStackTrace();
         }
 
-        peopleScanAgents = Utils.findAvailableScanAgents(this);
+        //peopleScanAgents = Utils.findAvailableScanAgents(this);
+        peopleScanAgents = Utils.findAvailableAgents(this, "scan");
     }
 
     private void acceptNewAgents() {
