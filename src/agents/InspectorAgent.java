@@ -7,20 +7,30 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import utils.Utils;
-
 import java.util.Vector;
+import java.util.Random;
 
 public class InspectorAgent extends Agent {
 
     private Vector<AID> peopleScanAgents;
+    private int distance;
+    private boolean isBusy;
 
-    public InspectorAgent(){
+    public InspectorAgent() {
+
         peopleScanAgents = new Vector<>();
+        distance = randomNumber();
+        isBusy = false;
+    }
+
+    public int randomNumber() {
+        Random rand = new Random();
+        return rand.nextInt(51);
     }
 
     @Override
     protected void setup() {
-        System.out.println("Hallo! Inspector-agent "+getAID().getName()+" is ready.");
+        System.out.println("Hallo! Inspector-agent " + getAID().getName() + " is ready.");
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
         dfAgentDescription.setName(getAID());
 
@@ -34,8 +44,8 @@ public class InspectorAgent extends Agent {
             fe.printStackTrace();
         }
 
-        //peopleScanAgents = Utils.findAvailableScanAgents(this);
-        //Utils.acceptNewScanAgents(this);
+        // peopleScanAgents = Utils.findAvailableScanAgents(this);
+        // Utils.acceptNewScanAgents(this);
 
         peopleScanAgents = Utils.findAvailableAgents(this, "scan");
         Utils.acceptNewAgents(this, "scan");
@@ -43,6 +53,18 @@ public class InspectorAgent extends Agent {
 
     public Vector<AID> getPeopleScanAgents() {
         return peopleScanAgents;
+    }
+
+    public int getInspectorDistance() {
+        return distance;
+    }
+
+    public boolean getIsBusy() {
+        return isBusy;
+    }
+
+    public void setIsBusy(boolean isBusy) {
+        this.isBusy = isBusy;
     }
 
 }

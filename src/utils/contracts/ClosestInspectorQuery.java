@@ -2,7 +2,6 @@ package utils.contracts;
 
 import agents.InspectorAgent;
 import agents.LuggageAgent;
-import agents.QueueManagerAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -12,11 +11,48 @@ import utils.Utils;
 
 import java.util.Vector;
 
-public class QueueSizeQuery extends ContractNetInitiator {
+// public class ClosestInspectorQuery extends ContractNetInitiator {
+    // String agentType;
+
+    // public ClosestInspectorQuery(Agent a, ACLMessage msg, String agentType) {
+    // super(a, msg);
+    // this.agentType = agentType;
+    // }
+
+    // @Override
+    // protected Vector prepareCfps(ACLMessage cfp) {
+    // Vector<ACLMessage> v = new Vector<>();
+    // InspectorAgent inspectorAgent = null;
+    // if (myAgent instanceof InspectorAgent) {
+    // inspectorAgent = (InspectorAgent) myAgent;
+    // }
+
+    // for (AID aid : LuggageAgent.getInspectorAgents()) {
+    // cfp.addReceiver(aid);
+    // }
+
+    // v.add(cfp);
+    // return v;
+
+    // }
+
+    // @Override
+    // protected void handleAllRespones(Vector responses, Vector acceptances) {
+
+    // for (Object response : responses) {
+
+    // }
+
+    // }
+// }
+
+
+
+public class ClosestInspectorQuery extends ContractNetInitiator {
 
     String agentType;
 
-    public QueueSizeQuery(Agent a, ACLMessage msg, String agentType) {
+    public ClosestInspectorQuery(Agent a, ACLMessage msg, String agentType) {
         super(a, msg);
         this.agentType = agentType;
     }

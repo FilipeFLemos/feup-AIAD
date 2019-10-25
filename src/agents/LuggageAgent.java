@@ -13,14 +13,13 @@ import utils.contracts.QueueSizeAnswerer;
 
 import java.util.Vector;
 
-
 public class LuggageAgent extends AbstractAgent {
 
     private int trailFreeSpace;
     private Vector<AID> peopleScanAgents;
     private Vector<AID> inspectorAgents;
 
-    public LuggageAgent(){
+    public LuggageAgent() {
         peopleScanAgents = new Vector<>();
         trailFreeSpace = Utils.MAX_LUGGAGE_CAPACITY;
     }
@@ -56,9 +55,14 @@ public class LuggageAgent extends AbstractAgent {
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
         Utils.allocatePersonToBeScanned(this);
+        //addBehaviou(new )
     }
 
     public Vector<AID> getPeopleScanAgents() {
         return peopleScanAgents;
+    }
+
+    public Vector<AID> getInspectorAgents() {
+        return inspectorAgents;
     }
 }
