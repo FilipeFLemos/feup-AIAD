@@ -53,6 +53,10 @@ public class InspectorAgent extends Agent {
 
         peopleScanAgents = Utils.findAvailableAgents(this, "scan");
         Utils.acceptNewAgents(this, "scan");
+
+        addBehaviour(new ClosestInspectorAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        Utils.allocateClosestInspector(this);
+
     }
 
     public Vector<AID> getPeopleScanAgents() {

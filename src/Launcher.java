@@ -35,9 +35,8 @@ public class Launcher {
 
 		queueManagerAgent.allocateLuggage();
 		Utils.allocatePersonToBeScanned(queueManagerAgent);
-
 		for (LuggageAgent luggageAgent : luggageAgents) {
-			luggageAgent.closestInspector();
+			Utils.allocateClosestInspector(luggageAgent);
 		}
 	}
 

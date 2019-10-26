@@ -58,13 +58,7 @@ public class LuggageAgent extends AbstractAgent {
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
         Utils.allocatePersonToBeScanned(this);
         addBehaviour(new ClosestInspectorAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
-        // Utils.allocateClosestInspector(this);
-    }
-
-    public void closestInspector() {
-        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-        msg.setContent("Which Inspector is the closest?");
-        addBehaviour(new ClosestInspectorQuery(this, msg));
+        Utils.allocateClosestInspector(this);
     }
 
     public Vector<AID> getPeopleScanAgents() {

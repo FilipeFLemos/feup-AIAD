@@ -105,4 +105,10 @@ public class Utils {
         ;
     }
 
+    public static void allocateClosestInspector(Agent agent) {
+        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+        msg.setContent("Which Inspector is the closest?");
+        agent.addBehaviour(new ClosestInspectorQuery(agent, msg));
+    }
+
 }
