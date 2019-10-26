@@ -8,6 +8,8 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import utils.Utils;
+import utils.contracts.ClosestInspectorAnswerer;
+import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.LateScanAgentSubscription;
 import utils.contracts.QueueSizeAnswerer;
 
@@ -26,7 +28,7 @@ public class LuggageAgent extends AbstractAgent {
 
     @Override
     protected void setup() {
-        System.out.println("Hallo! Luggage-agent "+getAID().getName()+" is ready.");
+        System.out.println("Hallo! Luggage-agent " + getAID().getName() + " is ready.");
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
         dfAgentDescription.setName(getAID());
 
@@ -41,12 +43,12 @@ public class LuggageAgent extends AbstractAgent {
         }
 
         /**
-        peopleScanAgents = Utils.findAvailableScanAgents(this);
-        Utils.acceptNewScanAgents(this);
-
-        inspectorAgents = Utils.findAvailableInspectorAgents(this);
-        Utils.acceptNewInspectorAgents(this);
-        **/
+         * peopleScanAgents = Utils.findAvailableScanAgents(this);
+         * Utils.acceptNewScanAgents(this);
+         * 
+         * inspectorAgents = Utils.findAvailableInspectorAgents(this);
+         * Utils.acceptNewInspectorAgents(this);
+         **/
 
         peopleScanAgents = Utils.findAvailableAgents(this, "scan");
         Utils.acceptNewAgents(this, "scan");
@@ -55,7 +57,14 @@ public class LuggageAgent extends AbstractAgent {
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
         Utils.allocatePersonToBeScanned(this);
-        //addBehaviou(new )
+        addBehaviour(new ClosestInspectorAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        // Utils.allocateClosestInspector(this);
+    }
+
+    public void closestInspector() {
+        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+        msg.setContent("Which Inspector is the closest?");
+        addBehaviour(new ClosestInspectorQuery(this, msg));
     }
 
     public Vector<AID> getPeopleScanAgents() {

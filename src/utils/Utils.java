@@ -8,6 +8,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.LateScanAgentSubscription;
 import utils.contracts.LateSubscription;
 import utils.contracts.QueueSizeQuery;
@@ -19,7 +20,7 @@ public class Utils {
 
     public static final int NUM_LUGGAGE_AGENTS = 3;
     public static int NUM_PEOPLE_AGENTS = 2;
-    public static int NUM_INSPECTOR_AGENTS = 3;
+    public static int NUM_INSPECTOR_AGENTS = 1;
     public static int MAX_LUGGAGE_CAPACITY = 5;
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
 
@@ -101,12 +102,7 @@ public class Utils {
         ACLMessage msg = new ACLMessage(ACLMessage.CFP);
         msg.setContent("What is your queue size?");
         agent.addBehaviour(new QueueSizeQuery(agent, msg, "scan"));
-    }
-
-    public static void allocateClosestInspector(Agent agent) {
-        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
-        msg.setContent("What is the closest Inspector?");
-        agent.addBehaviour(new ClosestInspectorQuery.java(agent, msg, "inspector"));
+        ;
     }
 
 }

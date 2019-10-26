@@ -1,6 +1,8 @@
 package utils.contracts;
 
 import agents.AbstractAgent;
+import agents.InspectorAgent;
+import agents.LuggageAgent;
 import jade.core.Agent;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -17,37 +19,64 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         super(a, mt);
     }
 
-    @Override
-    protected ACLMessage handleCfp(ACLMessage cfp) {
-        AbstractAgent abstractAgent = (AbstractAgent) myAgent;
-        if (abstractAgent.getQueueManager() == null) {
-            abstractAgent.setQueueManager(cfp.getSender());
-        }
+    // @Override
+    // protected ACLMessage handleCfp(ACLMessage cfp) {
+    // LuggageAgent luggageAgent = (LuggageAgent) myAgent;
+    // Vector<AID> inspectorAgents = (Vector<AID>)
+    // luggageAgent.getInspectorAgents();
+    // int pos = 0;
+    // int minDistance = 1000;
+    // int minPos = -1;
+    // for (Object inspectorAgent : inspectorAgents) {
+    // InspectorAgent inspector = (InspectorAgent) inspectorAgent;
+    // try {
+    // int distance = inspector.getInspectorDistance();
+    // if (distance < minDistance && !inspector.getIsBusy()) {
+    // minDistance = distance;
+    // minPos = pos;
+    // }
+    // } catch (UnreadableException e) {
+    // e.printStackTrace();
+    // }
+    // pos++;
+    // }
 
-        Integer queueSpace = abstractAgent.getQueueSize();
+    // if (minPost != -1) {
+    // ACLMessage reply = cfp.createReply();
+    // reply.setPerformative(ACLMessage.PROPOSE);
+    // }
 
-        ACLMessage reply = cfp.createReply();
-        reply.setPerformative(ACLMessage.PROPOSE);
-        try {
-            reply.setContentObject(queueSpace);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    // if (inspectorAgent.getIsBusy() == false) {
+    // inspectorAgent.setQueueManager(cfp.getSender());
+    // }
 
-        return reply;
-    }
+    // Integer queueSpace = abstractAgent.getQueueSize();
 
-    @Override
-    protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
+    // ACLMessage reply = cfp.createReply();
+    // reply.setPerformative(ACLMessage.PROPOSE);
+    // try {
+    // reply.setContentObject(queueSpace);
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
 
-        ACLMessage reply = accept.createReply();
-        reply.setPerformative(ACLMessage.INFORM);
-        reply.setContent("Will be done");
-        ((AbstractAgent) myAgent).increaseQueueSize();
+    // return reply;
 
-        System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "
-                + cfp.getSender().getLocalName());
+    //return null;
+    //}
 
-        return reply;
-    }
+   // @Override
+   // protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
+
+        // ACLMessage reply = accept.createReply();
+        // reply.setPerformative(ACLMessage.INFORM);
+        // reply.setContent("Will be done");
+        // ((AbstractAgent) myAgent).increaseQueueSize();
+
+        // System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "
+        //         + cfp.getSender().getLocalName());
+
+        // return reply;
+ //   }
+
 }

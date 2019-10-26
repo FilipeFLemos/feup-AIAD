@@ -7,6 +7,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import utils.Utils;
+import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.LateSubscription;
 import utils.contracts.QueueSizeQuery;
 
@@ -17,7 +18,7 @@ public class QueueManagerAgent extends Agent {
     private Vector<AID> luggageAgents;
     private Vector<AID> peopleScanAgents;
 
-    public QueueManagerAgent(){
+    public QueueManagerAgent() {
         luggageAgents = new Vector<>();
         peopleScanAgents = new Vector<>();
     }
@@ -40,7 +41,7 @@ public class QueueManagerAgent extends Agent {
             fe.printStackTrace();
         }
 
-        //peopleScanAgents = Utils.findAvailableScanAgents(this);
+        // peopleScanAgents = Utils.findAvailableScanAgents(this);
         peopleScanAgents = Utils.findAvailableAgents(this, "scan");
     }
 

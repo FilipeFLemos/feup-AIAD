@@ -27,33 +27,31 @@ public class QueueSizeQuery extends ContractNetInitiator {
 
         QueueManagerAgent queueManagerAgent = null;
         LuggageAgent luggageAgent = null;
-        if(myAgent instanceof QueueManagerAgent){
+        if (myAgent instanceof QueueManagerAgent) {
             queueManagerAgent = (QueueManagerAgent) myAgent;
-        }
-        else{
+        } else {
             luggageAgent = (LuggageAgent) myAgent;
         }
 
-        switch(agentType){
-            case "luggage":
-                for (AID aid : ((QueueManagerAgent) myAgent).getLuggageAgents()) {
+        switch (agentType) {
+        case "luggage":
+            for (AID aid : ((QueueManagerAgent) myAgent).getLuggageAgents()) {
+                cfp.addReceiver(aid);
+            }
+            break;
+        case "scan":
+
+            if (luggageAgent != null) {
+                for (AID aid : luggageAgent.getPeopleScanAgents()) {
                     cfp.addReceiver(aid);
                 }
-                break;
-            case "scan":
-
-                if(luggageAgent != null){
-                    for (AID aid : luggageAgent.getPeopleScanAgents()) {
-                        cfp.addReceiver(aid);
-                    }
+            } else {
+                for (AID aid : queueManagerAgent.getPeopleScanAgents()) {
+                    cfp.addReceiver(aid);
                 }
-                else{
-                    for (AID aid : queueManagerAgent.getPeopleScanAgents()) {
-                        cfp.addReceiver(aid);
-                    }
-                }
+            }
 
-                break;
+            break;
         }
 
         v.add(cfp);
@@ -64,29 +62,26 @@ public class QueueSizeQuery extends ContractNetInitiator {
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
         int maxQueueSize = 0;
-        switch(agentType){
-            case "luggage":
-                maxQueueSize = Utils.MAX_LUGGAGE_CAPACITY;
-                break;
-            case "scan":
-                maxQueueSize = Utils.MAX_PEOPLE_QUEUE_SIZE;
-                break;
+        switch (agentType) {
+        case "luggage":
+            maxQueueSize = Utils.MAX_LUGGAGE_CAPACITY;
+            break;
+        case "scan":
+            maxQueueSize = Utils.MAX_PEOPLE_QUEUE_SIZE;
+            break;
         }
 
         int min = maxQueueSize;
-        System.out.println("maxQueueSize " + maxQueueSize);
         for (Object response : responses) {
             int curr = maxQueueSize;
             try {
                 curr = (Integer) ((ACLMessage) response).getContentObject();
-                System.out.println("Curr " + curr);
-                //System.out.println("Response " + response);
-                System.out.println("----");
             } catch (UnreadableException e) {
                 e.printStackTrace();
             }
 
-            if (curr < min) min = curr;
+            if (curr < min)
+                min = curr;
         }
 
         boolean chosen = false;

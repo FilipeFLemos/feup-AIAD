@@ -18,10 +18,9 @@ public class QueueSizeAnswerer extends ContractNetResponder {
     }
 
     @Override
-    protected ACLMessage handleCfp(ACLMessage cfp){
-        AbstractAgent abstractAgent = (AbstractAgent)myAgent;
-        if (abstractAgent.getQueueManager() == null)
-        {
+    protected ACLMessage handleCfp(ACLMessage cfp) {
+        AbstractAgent abstractAgent = (AbstractAgent) myAgent;
+        if (abstractAgent.getQueueManager() == null) {
             abstractAgent.setQueueManager(cfp.getSender());
         }
 
@@ -46,7 +45,8 @@ public class QueueSizeAnswerer extends ContractNetResponder {
         reply.setContent("Will be done");
         ((AbstractAgent) myAgent).increaseQueueSize();
 
-        System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "+ cfp.getSender().getLocalName());
+        System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "
+                + cfp.getSender().getLocalName());
 
         return reply;
     }
