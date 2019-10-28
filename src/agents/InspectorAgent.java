@@ -24,6 +24,7 @@ public class InspectorAgent extends Agent {
 
         peopleScanAgents = new Vector<>();
         distance = randomNumber(51);
+        System.out.println("Distance " + distance);
         isBusy = (randomNumber(101) < 50) ? true : false;
     }
 

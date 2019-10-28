@@ -37,18 +37,40 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
+        int min = Utils.MAX_INSPECTOR_DISTANCE;
+        for (Object response : responses) {
+            int curr = Utils.MAX_INSPECTOR_DISTANCE;
+            try {
+                if (null != (Integer) ((ACLMessage) response).getContentObject()) {
+                    curr = (Integer) ((ACLMessage) response).getContentObject();
+                }
+            } catch (UnreadableException e) {
+                e.printStackTrace();
+            }
+
+            if (curr < min)
+                min = curr;
+        }
+
+        boolean chosen = false;
         for (Object response : responses) {
             ACLMessage current = (ACLMessage) response;
-            // try {
-            ACLMessage msg = current.createReply();
-            // if ((Integer) ((ACLMessage) response).getContentObject() != -1) {
-            msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-            // } else
-            // msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
-            acceptances.add(msg);
-            // } catch (UnreadableException e) {
-            // e.printStackTrace();
-            // }
+            try {
+                ACLMessage msg = current.createReply();
+                if (null != ((ACLMessage) response).getContentObject()) {
+
+                    if (!chosen && (Integer) ((ACLMessage) response).getContentObject() == min) {
+                        msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                        chosen = true;
+
+                    } else
+                        msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                }
+
+                acceptances.add(msg);
+            } catch (UnreadableException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

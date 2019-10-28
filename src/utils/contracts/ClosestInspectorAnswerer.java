@@ -27,8 +27,9 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
         try {
+            int distance = inspectorAgent.getInspectorDistance();
             if (!inspectorAgent.getIsBusy()) {
-                reply.setContentObject(inspectorAgent.getInspectorDistance());
+                reply.setContentObject(distance);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -46,7 +47,7 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         reply.setContent("Will be done");
         ((InspectorAgent) myAgent).toggleIsBusy();
 
-        System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "
+        System.out.println(myAgent.getLocalName() + ": I was selected to check the irregularity from Agent "
                 + cfp.getSender().getLocalName());
 
         return reply;
