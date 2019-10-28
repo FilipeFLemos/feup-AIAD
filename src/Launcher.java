@@ -35,9 +35,16 @@ public class Launcher {
 
 		queueManagerAgent.allocateLuggage();
 		Utils.allocatePersonToBeScanned(queueManagerAgent);
+
+		luggageAgents.get(0).setHasIrregularLuggage(true);
+		luggageAgents.get(1).setHasIrregularLuggage(true);
 		for (LuggageAgent luggageAgent : luggageAgents) {
-			Utils.allocateClosestInspector(luggageAgent);
+			System.out.println("Irregular? " + luggageAgent.getHasIrregularLuggage());
+			if (luggageAgent.getHasIrregularLuggage()) {
+				Utils.allocateClosestInspector(luggageAgent);
+			}
 		}
+
 	}
 
 	public static void main(String[] args) {

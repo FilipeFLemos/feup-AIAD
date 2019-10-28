@@ -48,14 +48,8 @@ public class InspectorAgent extends Agent {
             fe.printStackTrace();
         }
 
-        // peopleScanAgents = Utils.findAvailableScanAgents(this);
-        // Utils.acceptNewScanAgents(this);
-
         peopleScanAgents = Utils.findAvailableAgents(this, "scan");
         Utils.acceptNewAgents(this, "scan");
-
-        addBehaviour(new ClosestInspectorAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
-        Utils.allocateClosestInspector(this);
 
     }
 
@@ -73,6 +67,10 @@ public class InspectorAgent extends Agent {
 
     public void setIsBusy(boolean isBusy) {
         this.isBusy = isBusy;
+    }
+
+    public void toggleIsBusy() {
+        this.isBusy = !this.isBusy;
     }
 
 }

@@ -13,6 +13,7 @@ import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.LateScanAgentSubscription;
 import utils.contracts.QueueSizeAnswerer;
 
+import java.util.Random;
 import java.util.Vector;
 
 public class LuggageAgent extends AbstractAgent {
@@ -20,10 +21,12 @@ public class LuggageAgent extends AbstractAgent {
     private int trailFreeSpace;
     private Vector<AID> peopleScanAgents;
     private Vector<AID> inspectorAgents;
+    private boolean hasIrregularLuggage;
 
     public LuggageAgent() {
         peopleScanAgents = new Vector<>();
         trailFreeSpace = Utils.MAX_LUGGAGE_CAPACITY;
+        hasIrregularLuggage = randomizeHasIrregularLuggage();
     }
 
     @Override
@@ -57,8 +60,10 @@ public class LuggageAgent extends AbstractAgent {
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
         Utils.allocatePersonToBeScanned(this);
-        addBehaviour(new ClosestInspectorAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
-        Utils.allocateClosestInspector(this);
+
+        // addBehaviour(new ClosestInspectorAnswerer(this,
+        // MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        // Utils.allocateClosestInspector(this);
     }
 
     public Vector<AID> getPeopleScanAgents() {
@@ -67,5 +72,21 @@ public class LuggageAgent extends AbstractAgent {
 
     public Vector<AID> getInspectorAgents() {
         return inspectorAgents;
+    }
+
+    public boolean getHasIrregularLuggage() {
+        return hasIrregularLuggage;
+    }
+
+    public boolean randomizeHasIrregularLuggage() {
+        Random rand = new Random();
+        if (rand.nextInt(101) > 90) {
+            return true;
+        }
+        return false;
+    }
+
+    public void setHasIrregularLuggage(boolean isIrregular) {
+        hasIrregularLuggage = isIrregular;
     }
 }

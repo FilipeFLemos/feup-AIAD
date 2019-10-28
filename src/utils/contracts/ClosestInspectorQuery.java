@@ -36,33 +36,19 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
-        LuggageAgent luggageAgent = (LuggageAgent) myAgent;
-        Vector<AID> inspectorAgents = (Vector<AID>) luggageAgent.getInspectorAgents();
-        int pos = 0;
-        int minDistance = 1000;
-        int minPos = -1;
-        for (Object inspectorAgent : inspectorAgents) {
-            InspectorAgent inspector = (InspectorAgent) inspectorAgent;
-
-            int distance = inspector.getInspectorDistance();
-            if (distance < minDistance && !inspector.getIsBusy()) {
-                minDistance = distance;
-                minPos = pos;
-            }
-
-            pos++;
-        }
-
         for (Object response : responses) {
             ACLMessage current = (ACLMessage) response;
-
-            ACLMessage msg = current.createReply();
-            if (minPos != -1) {
-                msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
-            } else {
-                msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            try {
+                ACLMessage msg = current.createReply();
+                if ((Integer) ((ACLMessage) response).getContentObject() != -1) {
+                    msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                } else {
+                    msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                }
+                acceptances.add(msg);
+            } catch (UnreadableException e) {
+                e.printStackTrace();
             }
-            acceptances.add(msg);
 
         }
     }
