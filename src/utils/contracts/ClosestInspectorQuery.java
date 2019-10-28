@@ -25,6 +25,7 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
     protected Vector prepareCfps(ACLMessage cfp) {
         Vector<ACLMessage> v = new Vector<>();
         LuggageAgent luggageAgent = (LuggageAgent) myAgent;
+
         for (AID aid : luggageAgent.getInspectorAgents()) {
             cfp.addReceiver(aid);
         }
@@ -38,18 +39,16 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
 
         for (Object response : responses) {
             ACLMessage current = (ACLMessage) response;
-            try {
-                ACLMessage msg = current.createReply();
-                if ((Integer) ((ACLMessage) response).getContentObject() != -1) {
-                    msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-                } else {
-                    msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
-                }
-                acceptances.add(msg);
-            } catch (UnreadableException e) {
-                e.printStackTrace();
-            }
-
+            // try {
+            ACLMessage msg = current.createReply();
+            // if ((Integer) ((ACLMessage) response).getContentObject() != -1) {
+            msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            // } else
+            // msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
+            acceptances.add(msg);
+            // } catch (UnreadableException e) {
+            // e.printStackTrace();
+            // }
         }
     }
 }

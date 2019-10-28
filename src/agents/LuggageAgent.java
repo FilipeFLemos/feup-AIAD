@@ -45,14 +45,6 @@ public class LuggageAgent extends AbstractAgent {
             fe.printStackTrace();
         }
 
-        /**
-         * peopleScanAgents = Utils.findAvailableScanAgents(this);
-         * Utils.acceptNewScanAgents(this);
-         * 
-         * inspectorAgents = Utils.findAvailableInspectorAgents(this);
-         * Utils.acceptNewInspectorAgents(this);
-         **/
-
         peopleScanAgents = Utils.findAvailableAgents(this, "scan");
         Utils.acceptNewAgents(this, "scan");
         inspectorAgents = Utils.findAvailableAgents(this, "inspector");
@@ -60,10 +52,8 @@ public class LuggageAgent extends AbstractAgent {
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
         Utils.allocatePersonToBeScanned(this);
-
-        // addBehaviour(new ClosestInspectorAnswerer(this,
-        // MessageTemplate.MatchPerformative(ACLMessage.CFP)));
-        // Utils.allocateClosestInspector(this);
+        if (hasIrregularLuggage)
+            Utils.allocateClosestInspector(this);
     }
 
     public Vector<AID> getPeopleScanAgents() {

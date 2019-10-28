@@ -23,25 +23,13 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
 
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
-        LuggageAgent luggageAgent = (LuggageAgent) myAgent;
-        Vector<AID> inspectorAgents = (Vector<AID>) luggageAgent.getInspectorAgents();
-        int pos = 0;
-        int minDistance = 1000;
-        int minPos = -1;
-        for (Object inspector : inspectorAgents) {
-            InspectorAgent inspectorAgent = (InspectorAgent) inspector;
-            int distance = inspectorAgent.getInspectorDistance();
-            if (distance < minDistance && !inspectorAgent.getIsBusy()) {
-                minDistance = distance;
-                minPos = pos;
-            }
-            pos++;
-        }
-
+        InspectorAgent inspectorAgent = (InspectorAgent) myAgent;
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
         try {
-            reply.setContentObject(minPos);
+            if (!inspectorAgent.getIsBusy()) {
+                reply.setContentObject(inspectorAgent.getInspectorDistance());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

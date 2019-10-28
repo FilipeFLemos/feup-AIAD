@@ -23,13 +23,13 @@ public class InspectorAgent extends Agent {
     public InspectorAgent() {
 
         peopleScanAgents = new Vector<>();
-        distance = randomNumber();
-        isBusy = false;
+        distance = randomNumber(51);
+        isBusy = (randomNumber(101) < 50) ? true : false;
     }
 
-    public int randomNumber() {
+    public int randomNumber(int i) {
         Random rand = new Random();
-        return rand.nextInt(51);
+        return rand.nextInt(i);
     }
 
     @Override
@@ -52,7 +52,6 @@ public class InspectorAgent extends Agent {
         Utils.acceptNewAgents(this, "scan");
 
         addBehaviour(new ClosestInspectorAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
-
 
     }
 
