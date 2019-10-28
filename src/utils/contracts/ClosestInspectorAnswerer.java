@@ -40,11 +40,6 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
 
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
-        System.out.println("Hey " + minPos);
-        // if (minPos != -1) {
-        // InspectorAgent inspectorAgent = (InspectorAgent) inspectorAgents.get(minPos);
-        // inspectorAgent.toggleIsBusy();
-        // }
         try {
             reply.setContentObject(minPos);
         } catch (IOException e) {
@@ -61,7 +56,7 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         ACLMessage reply = accept.createReply();
         reply.setPerformative(ACLMessage.INFORM);
         reply.setContent("Will be done");
-        ((AbstractAgent) myAgent).increaseQueueSize();
+        ((InspectorAgent) myAgent).toggleIsBusy();
 
         System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "
                 + cfp.getSender().getLocalName());
