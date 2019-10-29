@@ -2,11 +2,32 @@ package agents;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
+
+import java.util.Vector;
 
 public abstract class AbstractAgent extends Agent {
 
     private int queueSize = 0;
-    private AID queueManager = null;
+    Vector<AID> peopleScanAgents;
+
+    void setServiceDescription(String type){
+        DFAgentDescription dfAgentDescription = new DFAgentDescription();
+        dfAgentDescription.setName(getAID());
+
+        ServiceDescription serviceDescription = new ServiceDescription();
+        serviceDescription.setType(type);
+        serviceDescription.setName(getLocalName());
+        dfAgentDescription.addServices(serviceDescription);
+        try {
+            DFService.register(this, dfAgentDescription);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
+    }
 
 
     @Override
@@ -14,17 +35,9 @@ public abstract class AbstractAgent extends Agent {
         return queueSize;
     }
 
-    public AID getQueueManager() {
-        return queueManager;
-    }
-
     @Override
     public void setQueueSize(int queueSize) {
         this.queueSize = queueSize;
-    }
-
-    public void setQueueManager(AID queueManager) {
-        this.queueManager = queueManager;
     }
 
     public void increaseQueueSize(){
@@ -33,5 +46,13 @@ public abstract class AbstractAgent extends Agent {
 
     public void decreaseQueueSize(){
         queueSize--;
+    }
+
+    public Vector<AID> getPeopleScanAgents() {
+        return peopleScanAgents;
+    }
+
+    void setPeopleScanAgents(Vector<AID> peopleScanAgents) {
+        this.peopleScanAgents = peopleScanAgents;
     }
 }

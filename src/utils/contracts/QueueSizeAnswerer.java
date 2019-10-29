@@ -2,9 +2,6 @@ package utils.contracts;
 
 import agents.AbstractAgent;
 import jade.core.Agent;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
@@ -20,9 +17,6 @@ public class QueueSizeAnswerer extends ContractNetResponder {
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
         AbstractAgent abstractAgent = (AbstractAgent) myAgent;
-        if (abstractAgent.getQueueManager() == null) {
-            abstractAgent.setQueueManager(cfp.getSender());
-        }
 
         Integer queueSpace = abstractAgent.getQueueSize();
 

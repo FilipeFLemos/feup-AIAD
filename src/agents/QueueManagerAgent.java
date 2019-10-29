@@ -1,25 +1,26 @@
 package agents;
 
 import jade.core.AID;
-import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import utils.Utils;
 import utils.contracts.QueueSizeQuery;
 
 import java.util.Vector;
 
-public class QueueManagerAgent extends Agent {
+public class QueueManagerAgent extends AbstractAgent {
 
     private Vector<AID> luggageAgents;
-    private Vector<AID> peopleScanAgents;
 
     public QueueManagerAgent() {
         luggageAgents = new Vector<>();
-        peopleScanAgents = new Vector<>();
+        setPeopleScanAgents(new Vector<>());
     }
 
     @Override
     protected void setup() {
+        System.out.println("Hallo! manager-agent " + getAID().getName() + " is ready.");
+        setServiceDescription("manager");
+
         findAvailableAgents();
         acceptNewAgents();
     }
@@ -44,7 +45,4 @@ public class QueueManagerAgent extends Agent {
         return luggageAgents;
     }
 
-    public Vector<AID> getPeopleScanAgents() {
-        return peopleScanAgents;
-    }
 }

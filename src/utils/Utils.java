@@ -25,7 +25,7 @@ public class Utils {
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
     public static int MAX_INSPECTOR_DISTANCE = 1000;
 
-    public static DFAgentDescription getDFAgentDescriptionTemplate(String type) {
+    private static DFAgentDescription getDFAgentDescriptionTemplate(String type) {
         DFAgentDescription template = new DFAgentDescription();
         ServiceDescription sd = new ServiceDescription();
         sd.setType(type);
