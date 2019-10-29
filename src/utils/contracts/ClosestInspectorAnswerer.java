@@ -23,30 +23,14 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
 
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
-        LuggageAgent luggageAgent = (LuggageAgent) myAgent;
-        Vector<AID> inspectorAgents = (Vector<AID>) luggageAgent.getInspectorAgents();
-        int pos = 0;
-        int minDistance = 1000;
-        int minPos = -1;
-        for (Object inspector : inspectorAgents) {
-            InspectorAgent inspectorAgent = (InspectorAgent) inspector;
-            int distance = inspectorAgent.getInspectorDistance();
-            if (distance < minDistance && !inspectorAgent.getIsBusy()) {
-                minDistance = distance;
-                minPos = pos;
-            }
-            pos++;
-        }
-
+        InspectorAgent inspectorAgent = (InspectorAgent) myAgent;
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
-        System.out.println("Hey " + minPos);
-        // if (minPos != -1) {
-        // InspectorAgent inspectorAgent = (InspectorAgent) inspectorAgents.get(minPos);
-        // inspectorAgent.toggleIsBusy();
-        // }
         try {
-            reply.setContentObject(minPos);
+            int distance = inspectorAgent.getInspectorDistance();
+            if (!inspectorAgent.getIsBusy()) {
+                reply.setContentObject(distance);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,9 +45,9 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         ACLMessage reply = accept.createReply();
         reply.setPerformative(ACLMessage.INFORM);
         reply.setContent("Will be done");
-        ((AbstractAgent) myAgent).increaseQueueSize();
+        ((InspectorAgent) myAgent).toggleIsBusy();
 
-        System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "
+        System.out.println(myAgent.getLocalName() + ": I was selected to check the irregularity from Agent "
                 + cfp.getSender().getLocalName());
 
         return reply;
