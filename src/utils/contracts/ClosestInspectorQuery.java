@@ -1,8 +1,6 @@
 package utils.contracts;
 
-import agents.InspectorAgent;
 import agents.LuggageAgent;
-import agents.QueueManagerAgent;
 
 import jade.core.AID;
 import jade.core.Agent;
@@ -14,8 +12,6 @@ import utils.Utils;
 import java.util.Vector;
 
 public class ClosestInspectorQuery extends ContractNetInitiator {
-
-    String agentType;
 
     public ClosestInspectorQuery(Agent a, ACLMessage msg) {
         super(a, msg);

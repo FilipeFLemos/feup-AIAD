@@ -1,6 +1,7 @@
 package agents;
 
 import jade.core.AID;
+import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -8,9 +9,7 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import utils.Utils;
-import utils.contracts.ClosestInspectorAnswerer;
 import utils.contracts.ClosestInspectorQuery;
-import utils.contracts.LateScanAgentSubscription;
 import utils.contracts.QueueSizeAnswerer;
 
 import java.util.Random;
@@ -45,16 +44,30 @@ public class LuggageAgent extends AbstractAgent {
             fe.printStackTrace();
         }
 
-        peopleScanAgents = Utils.findAvailableAgents(this, "scan");
-        Utils.acceptNewAgents(this, "scan");
-        inspectorAgents = Utils.findAvailableAgents(this, "inspector");
-        Utils.acceptNewAgents(this, "inspector");
+        findAvailableAgents();
+        acceptNewAgents();
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
         Utils.allocatePersonToBeScanned(this);
         System.out.println("Irreg " + getHasIrregularLuggage());
         if (getHasIrregularLuggage())
-            Utils.allocateClosestInspector(this);
+            allocateClosestInspector(this);
+    }
+
+    private void findAvailableAgents() {
+        peopleScanAgents = Utils.findAvailableAgents(this, "scan");
+        inspectorAgents = Utils.findAvailableAgents(this, "inspector");
+    }
+
+    private void acceptNewAgents(){
+        addBehaviour(Utils.lateSubscriptionFactoryMethod(this, "scan"));
+        addBehaviour(Utils.lateSubscriptionFactoryMethod(this, "inspector"));
+    }
+
+    private void allocateClosestInspector(Agent agent) {
+        ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+        msg.setContent("Which Inspector is the closest?");
+        agent.addBehaviour(new ClosestInspectorQuery(agent, msg));
     }
 
     public Vector<AID> getPeopleScanAgents() {

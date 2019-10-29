@@ -6,7 +6,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import utils.contracts.ClosestInspectorAnswerer;
 import utils.contracts.QueueSizeAnswerer;
 
 public class PeopleScanAgent extends AbstractAgent {

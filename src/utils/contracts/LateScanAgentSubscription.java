@@ -2,6 +2,7 @@ package utils.contracts;
 
 import agents.InspectorAgent;
 import agents.LuggageAgent;
+import agents.QueueManagerAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -25,15 +26,22 @@ public class LateScanAgentSubscription extends SubscriptionInitiator {
 
                 InspectorAgent inspectorAgent = null;
                 LuggageAgent luggageAgent = null;
+                QueueManagerAgent queueManagerAgent = null;
                 if(myAgent instanceof InspectorAgent){
                     inspectorAgent = (InspectorAgent) myAgent;
                 }
-                else{
+                else if(myAgent instanceof LuggageAgent){
                     luggageAgent = (LuggageAgent) myAgent;
                 }
+                else {
+                    queueManagerAgent = (QueueManagerAgent) myAgent;
+                }
 
-                if (luggageAgent != null && !luggageAgent.getPeopleScanAgents().contains(agent)) {
-
+                if (queueManagerAgent != null && !queueManagerAgent.getPeopleScanAgents().contains(agent)) {
+                    queueManagerAgent.getPeopleScanAgents().add(agent);
+                    System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + queueManagerAgent.getPeopleScanAgents().size());
+                }
+                else if (luggageAgent != null && !luggageAgent.getPeopleScanAgents().contains(agent)) {
                     luggageAgent.getPeopleScanAgents().add(agent);
                     System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + luggageAgent.getPeopleScanAgents().size());
                 }

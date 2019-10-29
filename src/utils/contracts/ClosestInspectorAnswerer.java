@@ -1,18 +1,10 @@
 package utils.contracts;
 
-import agents.AbstractAgent;
 import agents.InspectorAgent;
-import agents.LuggageAgent;
-import jade.core.AID;
 import jade.core.Agent;
-import jade.domain.FIPAAgentManagement.FailureException;
-import jade.domain.FIPAAgentManagement.NotUnderstoodException;
-import jade.domain.FIPAAgentManagement.RefuseException;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
-import java.util.Vector;
-
 import java.io.IOException;
 
 public class ClosestInspectorAnswerer extends ContractNetResponder {
