@@ -24,7 +24,7 @@ public class QueueSizeAnswerer extends ContractNetResponder {
         AbstractAgent abstractAgent = (AbstractAgent) myAgent;
         ACLMessage reply = cfp.createReply();
 
-        int queueSpace = abstractAgent.getQueueSize();
+        int queueSpace = abstractAgent.getAgentQueueSize();
         if(queueSpace == maxQueueSize){
             reply.setPerformative(ACLMessage.REFUSE);
         }
@@ -43,13 +43,15 @@ public class QueueSizeAnswerer extends ContractNetResponder {
     @Override
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
 
+        AbstractAgent abstractAgent = ((AbstractAgent) myAgent);
+
         ACLMessage reply = accept.createReply();
         reply.setPerformative(ACLMessage.INFORM);
         reply.setContent("Will be done");
-        ((AbstractAgent) myAgent).increaseQueueSize();
 
         try {
             Person person = (Person) accept.getContentObject();
+            abstractAgent.enqueue(person);
             System.out.println(myAgent.getLocalName() + ": I was selected to take the next person (ID: " + person.getId() + ") from Agent "
                     + cfp.getSender().getLocalName());
         } catch (UnreadableException e) {

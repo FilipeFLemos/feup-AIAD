@@ -12,12 +12,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Vector;
 
-public abstract class AbstractAgent extends Agent {
+public class AbstractAgent extends Agent {
 
     Queue agentQueue = new LinkedList<Person>();
     Vector<AID> luggageAgents;
     Vector<AID> peopleScanAgents;
-    private int queueSize = 0;
 
     void setServiceDescription(String type) {
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
@@ -42,7 +41,9 @@ public abstract class AbstractAgent extends Agent {
         agentQueue.add(person);
     }
 
-    public abstract void movedPerson();
+    public void movedPerson(){
+        agentQueue.poll();
+    }
 
     public Person getPerson(){
         if(!agentQueue.isEmpty()){
@@ -67,22 +68,7 @@ public abstract class AbstractAgent extends Agent {
         this.luggageAgents = luggageAgents;
     }
 
-    @Override
-    public int getQueueSize() {
-        return queueSize;
+    public int getAgentQueueSize(){
+        return agentQueue.size();
     }
-
-    @Override
-    public void setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
-    }
-
-    public void increaseQueueSize() {
-        queueSize++;
-    }
-
-    public void decreaseQueueSize() {
-        queueSize--;
-    }
-
 }

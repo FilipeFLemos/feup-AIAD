@@ -4,7 +4,6 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.QueueSizeAnswerer;
@@ -14,13 +13,11 @@ import java.util.Vector;
 
 public class LuggageAgent extends AbstractAgent {
 
-    private int trailFreeSpace;
     private Vector<AID> inspectorAgents;
     private boolean hasIrregularLuggage;
 
     public LuggageAgent() {
         setPeopleScanAgents(new Vector<>());
-        trailFreeSpace = Utils.MAX_LUGGAGE_CAPACITY;
         hasIrregularLuggage = randomizeHasIrregularLuggage();
     }
 
@@ -73,15 +70,5 @@ public class LuggageAgent extends AbstractAgent {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void movedPerson() {
-
-    }
-
-    @Override
-    public Person getPerson() {
-        return null;
     }
 }

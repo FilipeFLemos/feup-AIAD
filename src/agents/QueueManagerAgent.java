@@ -37,10 +37,4 @@ public class QueueManagerAgent extends AbstractAgent {
         msg.setContent("How many luggage can you receive?");
         addBehaviour(new QueueSizeQuery(this, msg, "luggage"));
     }
-
-    @Override
-    public void movedPerson() {
-        agentQueue.poll();
-    }
-
 }
