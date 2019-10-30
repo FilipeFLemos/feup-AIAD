@@ -37,6 +37,10 @@ public class AbstractAgent extends Agent {
         return agentQueue.isEmpty();
     }
 
+    public int getAgentQueueSize(){
+        return agentQueue.size();
+    }
+
     public void enqueue(Person person){
         agentQueue.add(person);
     }
@@ -64,11 +68,10 @@ public class AbstractAgent extends Agent {
         return luggageAgents;
     }
 
-    public void setLuggageAgents(Vector<AID> luggageAgents) {
+    void setLuggageAgents(Vector<AID> luggageAgents) {
         this.luggageAgents = luggageAgents;
     }
 
-    public int getAgentQueueSize(){
-        return agentQueue.size();
+    void processPerson() {
     }
 }

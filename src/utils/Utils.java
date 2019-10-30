@@ -31,6 +31,8 @@ public class Utils {
     public static int QUEUE_MAX_FREQUENCY = 35;
     public static int MAX_THREADS = 30;
     public static int LUGGAGE_PROCESSING_TIME = 10;
+    public static int REQUERY_DELAY = 1;
+    public static int SCANNING_TIME = 5;
 
     /**
      * Generates a random number.
@@ -41,6 +43,10 @@ public class Utils {
      */
     public static int getRandom(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
+
+    public static int getMilliSeconds(int seconds){
+        return seconds*1000;
     }
 
     private static DFAgentDescription getDFAgentDescriptionTemplate(String type) {

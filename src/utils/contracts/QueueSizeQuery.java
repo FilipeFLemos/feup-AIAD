@@ -1,8 +1,6 @@
 package utils.contracts;
 
 import agents.AbstractAgent;
-import agents.LuggageAgent;
-import agents.QueueManagerAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.WakerBehaviour;
@@ -101,7 +99,7 @@ public class QueueSizeQuery extends ContractNetInitiator {
     }
 
     private void rerunBehaviour() {
-        myAgent.addBehaviour(new WakerBehaviour(myAgent, 25) {
+        myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.REQUERY_DELAY)) {
             @Override
             protected void onWake() {
                 myAgent.addBehaviour(new QueueSizeQuery(myAgent, msg, agentType));

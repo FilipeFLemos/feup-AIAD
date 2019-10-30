@@ -2,8 +2,10 @@ package agents;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.QueueSizeAnswerer;
@@ -30,6 +32,7 @@ public class LuggageAgent extends AbstractAgent {
         acceptNewAgents();
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP),Utils.MAX_LUGGAGE_CAPACITY));
+        addBehaviour(new ScanLuggage());
         //Utils.allocatePersonToBeScanned(this);
         //System.out.println("Irreg " + getHasIrregularLuggage());
         /*if (getHasIrregularLuggage())
@@ -70,5 +73,27 @@ public class LuggageAgent extends AbstractAgent {
             return true;
         }
         return false;
+    }
+
+    private class ScanLuggage extends CyclicBehaviour {
+        public void action() {
+
+            if(agentQueue.isEmpty()){
+                block();
+            }
+            else{
+                Person person = (Person) agentQueue.poll();
+
+                int milliseconds = Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME);
+//                try {
+//                    Thread.sleep(milliseconds);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                //TODO: if something smelly chamar inspector
+                person.stopTimer();
+                System.out.println("Finished scanning");
+            }
+        }
     }
 }
