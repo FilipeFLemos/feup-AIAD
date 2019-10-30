@@ -1,7 +1,6 @@
 package agents;
 
 import jade.lang.acl.ACLMessage;
-import models.Person;
 import utils.Utils;
 import utils.contracts.QueueSizeQuery;
 
@@ -9,12 +8,9 @@ import java.util.Vector;
 
 public class QueueManagerAgent extends AbstractAgent {
 
-    private Person person;
-
     public QueueManagerAgent() {
         setLuggageAgents(new Vector<>());
         setPeopleScanAgents(new Vector<>());
-        person = null;
     }
 
     @Override
@@ -42,16 +38,9 @@ public class QueueManagerAgent extends AbstractAgent {
         addBehaviour(new QueueSizeQuery(this, msg, "luggage"));
     }
 
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
     @Override
     public void movedPerson() {
-        person = null;
+        agentQueue.poll();
     }
+
 }

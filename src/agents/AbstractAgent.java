@@ -8,10 +8,13 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import models.Person;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Vector;
 
 public abstract class AbstractAgent extends Agent {
 
+    Queue agentQueue = new LinkedList<Person>();
     Vector<AID> luggageAgents;
     Vector<AID> peopleScanAgents;
     private int queueSize = 0;
@@ -31,9 +34,22 @@ public abstract class AbstractAgent extends Agent {
         }
     }
 
+    public boolean isQueueEmpty(){
+        return agentQueue.isEmpty();
+    }
+
+    public void enqueue(Person person){
+        agentQueue.add(person);
+    }
+
     public abstract void movedPerson();
 
-    public abstract Person getPerson();
+    public Person getPerson(){
+        if(!agentQueue.isEmpty()){
+            return (Person) agentQueue.peek();
+        }
+        return null;
+    }
 
     public Vector<AID> getPeopleScanAgents() {
         return peopleScanAgents;

@@ -49,7 +49,7 @@ public class Launcher {
 
         while (!stopSystem) {
             int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
-            scheduledExecutorService.schedule(this::addPersonToQueue, randomWait, TimeUnit.SECONDS);
+            scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.SECONDS);
             scheduledExecutorService.schedule(this::allocatePerson, 1, TimeUnit.MILLISECONDS);
         }
     }
@@ -110,7 +110,7 @@ public class Launcher {
         }
     }
 
-    private void addPersonToQueue() {
+    private void enqueue() {
         Person person = generatePerson();
         waitingQueue.add(person);
     }
@@ -131,12 +131,12 @@ public class Launcher {
     }
 
     private void allocatePerson() {
-        if (!waitingQueue.isEmpty() && queueManagerAgent.getPerson() == null) {
+        if (!waitingQueue.isEmpty() && queueManagerAgent.isQueueEmpty()) {
             Person person = (Person) waitingQueue.poll();
             if (person == null) {
                 return;
             }
-            queueManagerAgent.setPerson(person);
+            queueManagerAgent.enqueue(person);
             switch (person.getPersonType()) {
                 case Empty:
                     System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: " + person.getId() + ") is being allocated..."+ queueManagerAgent.getPerson().getId());
