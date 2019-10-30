@@ -5,6 +5,7 @@ import agents.LuggageAgent;
 import agents.QueueManagerAgent;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
@@ -12,53 +13,33 @@ import utils.Utils;
 
 import java.io.IOException;
 import java.util.Vector;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import static utils.Utils.MAX_THREADS;
 
 public class QueueSizeQuery extends ContractNetInitiator {
 
-    String agentType;
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(MAX_THREADS);
+    private ACLMessage msg;
+    private String agentType;
 
     public QueueSizeQuery(Agent a, ACLMessage msg, String agentType) {
         super(a, msg);
         this.agentType = agentType;
+        this.msg = msg;
     }
 
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
         Vector<ACLMessage> v = new Vector<>();
-
-        QueueManagerAgent queueManagerAgent = null;
-        LuggageAgent luggageAgent = null;
-        if (myAgent instanceof QueueManagerAgent) {
-            queueManagerAgent = (QueueManagerAgent) myAgent;
-        } else {
-            luggageAgent = (LuggageAgent) myAgent;
-        }
-
+        AbstractAgent abstractAgent = (AbstractAgent) myAgent;
 
         switch (agentType) {
             case "luggage":
-                for (AID aid : ((QueueManagerAgent) myAgent).getLuggageAgents()) {
+                for (AID aid : abstractAgent.getLuggageAgents()) {
                     cfp.addReceiver(aid);
                 }
                 break;
             case "scan":
-
-                if (luggageAgent != null) {
-                    for (AID aid : luggageAgent.getPeopleScanAgents()) {
-                        cfp.addReceiver(aid);
-                    }
-                } else {
-                    for (AID aid : queueManagerAgent.getPeopleScanAgents()) {
-                        cfp.addReceiver(aid);
-                    }
+                for (AID aid : abstractAgent.getPeopleScanAgents()) {
+                    cfp.addReceiver(aid);
                 }
-
                 break;
         }
 
@@ -70,22 +51,16 @@ public class QueueSizeQuery extends ContractNetInitiator {
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
         AbstractAgent abstractAgent = (AbstractAgent) myAgent;
-
-        int maxQueueSize = 0;
-        switch (agentType) {
-            case "luggage":
-                maxQueueSize = Utils.MAX_LUGGAGE_CAPACITY;
-                break;
-            case "scan":
-                maxQueueSize = Utils.MAX_PEOPLE_QUEUE_SIZE;
-                break;
-        }
+        int maxQueueSize = Utils.MAX_PEOPLE_QUEUE_SIZE;
 
         int min = maxQueueSize;
-        for (Object response : responses) {
+        for (ACLMessage response : (Vector<ACLMessage>) responses) {
+            if (response.getPerformative() != ACLMessage.PROPOSE) {
+                continue;
+            }
             int curr = maxQueueSize;
             try {
-                curr = (Integer) ((ACLMessage) response).getContentObject();
+                curr = (Integer) response.getContentObject();
             } catch (UnreadableException e) {
                 e.printStackTrace();
             }
@@ -95,11 +70,13 @@ public class QueueSizeQuery extends ContractNetInitiator {
         }
 
         boolean chosen = false;
-        for (Object response : responses) {
-            ACLMessage current = (ACLMessage) response;
+        for (ACLMessage response : (Vector<ACLMessage>) responses) {
+            if (response.getPerformative() != ACLMessage.PROPOSE) {
+                continue;
+            }
             try {
-                ACLMessage msg = current.createReply();
-                if (!chosen && (Integer) current.getContentObject() == min) {
+                ACLMessage msg = response.createReply();
+                if (!chosen && (Integer) response.getContentObject() == min) {
                     msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     try {
                         msg.setContentObject(abstractAgent.getPerson());
@@ -116,5 +93,19 @@ public class QueueSizeQuery extends ContractNetInitiator {
                 e.printStackTrace();
             }
         }
+
+        if (min == maxQueueSize) {
+            System.out.println("Retrying...");
+            rerunBehaviour();
+        }
+    }
+
+    private void rerunBehaviour() {
+        myAgent.addBehaviour(new WakerBehaviour(myAgent, 25) {
+            @Override
+            protected void onWake() {
+                myAgent.addBehaviour(new QueueSizeQuery(myAgent, msg, agentType));
+            }
+        });
     }
 }

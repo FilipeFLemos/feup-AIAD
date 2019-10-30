@@ -1,6 +1,5 @@
 package agents;
 
-import jade.core.AID;
 import jade.lang.acl.ACLMessage;
 import models.Person;
 import utils.Utils;
@@ -10,11 +9,10 @@ import java.util.Vector;
 
 public class QueueManagerAgent extends AbstractAgent {
 
-    private Vector<AID> luggageAgents;
     private Person person;
 
     public QueueManagerAgent() {
-        luggageAgents = new Vector<>();
+        setLuggageAgents(new Vector<>());
         setPeopleScanAgents(new Vector<>());
         person = null;
     }
@@ -42,10 +40,6 @@ public class QueueManagerAgent extends AbstractAgent {
         ACLMessage msg = new ACLMessage(ACLMessage.CFP);
         msg.setContent("How many luggage can you receive?");
         addBehaviour(new QueueSizeQuery(this, msg, "luggage"));
-    }
-
-    public Vector<AID> getLuggageAgents() {
-        return luggageAgents;
     }
 
     public Person getPerson() {

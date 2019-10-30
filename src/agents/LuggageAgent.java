@@ -32,7 +32,7 @@ public class LuggageAgent extends AbstractAgent {
         findAvailableAgents();
         acceptNewAgents();
 
-        addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP),Utils.MAX_LUGGAGE_CAPACITY));
         //Utils.allocatePersonToBeScanned(this);
         //System.out.println("Irreg " + getHasIrregularLuggage());
         /*if (getHasIrregularLuggage())

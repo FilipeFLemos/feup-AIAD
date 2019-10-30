@@ -7,12 +7,12 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import models.Person;
-import utils.Utils;
 
 import java.util.Vector;
 
 public abstract class AbstractAgent extends Agent {
 
+    Vector<AID> luggageAgents;
     Vector<AID> peopleScanAgents;
     private int queueSize = 0;
 
@@ -35,6 +35,22 @@ public abstract class AbstractAgent extends Agent {
 
     public abstract Person getPerson();
 
+    public Vector<AID> getPeopleScanAgents() {
+        return peopleScanAgents;
+    }
+
+    void setPeopleScanAgents(Vector<AID> peopleScanAgents) {
+        this.peopleScanAgents = peopleScanAgents;
+    }
+
+    public Vector<AID> getLuggageAgents() {
+        return luggageAgents;
+    }
+
+    public void setLuggageAgents(Vector<AID> luggageAgents) {
+        this.luggageAgents = luggageAgents;
+    }
+
     @Override
     public int getQueueSize() {
         return queueSize;
@@ -53,11 +69,4 @@ public abstract class AbstractAgent extends Agent {
         queueSize--;
     }
 
-    public Vector<AID> getPeopleScanAgents() {
-        return peopleScanAgents;
-    }
-
-    void setPeopleScanAgents(Vector<AID> peopleScanAgents) {
-        this.peopleScanAgents = peopleScanAgents;
-    }
 }

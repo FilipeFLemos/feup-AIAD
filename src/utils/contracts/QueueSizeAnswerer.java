@@ -12,22 +12,29 @@ import java.io.IOException;
 
 public class QueueSizeAnswerer extends ContractNetResponder {
 
-    public QueueSizeAnswerer(Agent a, MessageTemplate mt) {
+    private int maxQueueSize;
+
+    public QueueSizeAnswerer(Agent a, MessageTemplate mt, int maxQueueSize) {
         super(a, mt);
+        this.maxQueueSize = maxQueueSize;
     }
 
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
         AbstractAgent abstractAgent = (AbstractAgent) myAgent;
-
-        Integer queueSpace = abstractAgent.getQueueSize();
-
         ACLMessage reply = cfp.createReply();
-        reply.setPerformative(ACLMessage.PROPOSE);
-        try {
-            reply.setContentObject(queueSpace);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        int queueSpace = abstractAgent.getQueueSize();
+        if(queueSpace == maxQueueSize - 1){
+            reply.setPerformative(ACLMessage.REFUSE);
+        }
+        else{
+            reply.setPerformative(ACLMessage.PROPOSE);
+            try {
+                reply.setContentObject(queueSpace);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return reply;
