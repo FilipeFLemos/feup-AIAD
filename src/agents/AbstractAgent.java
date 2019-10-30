@@ -6,15 +6,17 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import models.Person;
+import utils.Utils;
 
 import java.util.Vector;
 
 public abstract class AbstractAgent extends Agent {
 
-    private int queueSize = 0;
     Vector<AID> peopleScanAgents;
+    private int queueSize = 0;
 
-    void setServiceDescription(String type){
+    void setServiceDescription(String type) {
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
         dfAgentDescription.setName(getAID());
 
@@ -29,6 +31,9 @@ public abstract class AbstractAgent extends Agent {
         }
     }
 
+    public abstract void movedPerson();
+
+    public abstract Person getPerson();
 
     @Override
     public int getQueueSize() {
@@ -40,11 +45,11 @@ public abstract class AbstractAgent extends Agent {
         this.queueSize = queueSize;
     }
 
-    public void increaseQueueSize(){
+    public void increaseQueueSize() {
         queueSize++;
     }
 
-    public void decreaseQueueSize(){
+    public void decreaseQueueSize() {
         queueSize--;
     }
 

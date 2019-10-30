@@ -1,7 +1,6 @@
 package utils.contracts;
 
 import agents.LuggageAgent;
-
 import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;

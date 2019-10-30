@@ -22,7 +22,7 @@ public class LateScanAgentSubscription extends SubscriptionInitiator {
             for (DFAgentDescription dfd : dfds) {
                 AID agent = dfd.getName();
                 AbstractAgent abstractAgent = (AbstractAgent) myAgent;
-                if(!abstractAgent.getPeopleScanAgents().contains(agent)) {
+                if (!abstractAgent.getPeopleScanAgents().contains(agent)) {
                     abstractAgent.getPeopleScanAgents().add(agent);
                     System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + abstractAgent.getPeopleScanAgents().size());
                 }

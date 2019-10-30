@@ -4,6 +4,7 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.QueueSizeAnswerer;
@@ -32,10 +33,10 @@ public class LuggageAgent extends AbstractAgent {
         acceptNewAgents();
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
-        Utils.allocatePersonToBeScanned(this);
-        System.out.println("Irreg " + getHasIrregularLuggage());
-        if (getHasIrregularLuggage())
-            allocateClosestInspector(this);
+        //Utils.allocatePersonToBeScanned(this);
+        //System.out.println("Irreg " + getHasIrregularLuggage());
+        /*if (getHasIrregularLuggage())
+            allocateClosestInspector(this);*/
     }
 
     private void findAvailableAgents() {
@@ -43,7 +44,7 @@ public class LuggageAgent extends AbstractAgent {
         inspectorAgents = Utils.findAvailableAgents(this, "inspector");
     }
 
-    private void acceptNewAgents(){
+    private void acceptNewAgents() {
         addBehaviour(Utils.lateSubscriptionFactoryMethod(this, "scan"));
         addBehaviour(Utils.lateSubscriptionFactoryMethod(this, "inspector"));
     }
@@ -62,6 +63,10 @@ public class LuggageAgent extends AbstractAgent {
         return hasIrregularLuggage;
     }
 
+    public void setHasIrregularLuggage(boolean isIrregular) {
+        hasIrregularLuggage = isIrregular;
+    }
+
     public boolean randomizeHasIrregularLuggage() {
         Random rand = new Random();
         if (rand.nextInt(101) > 90) {
@@ -70,7 +75,13 @@ public class LuggageAgent extends AbstractAgent {
         return false;
     }
 
-    public void setHasIrregularLuggage(boolean isIrregular) {
-        hasIrregularLuggage = isIrregular;
+    @Override
+    public void movedPerson() {
+
+    }
+
+    @Override
+    public Person getPerson() {
+        return null;
     }
 }

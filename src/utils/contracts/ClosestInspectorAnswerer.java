@@ -5,6 +5,7 @@ import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
+
 import java.io.IOException;
 
 public class ClosestInspectorAnswerer extends ContractNetResponder {

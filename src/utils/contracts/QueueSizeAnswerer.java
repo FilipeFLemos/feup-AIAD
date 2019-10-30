@@ -4,7 +4,9 @@ import agents.AbstractAgent;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetResponder;
+import models.Person;
 
 import java.io.IOException;
 
@@ -39,8 +41,14 @@ public class QueueSizeAnswerer extends ContractNetResponder {
         reply.setContent("Will be done");
         ((AbstractAgent) myAgent).increaseQueueSize();
 
-        System.out.println(myAgent.getLocalName() + ": I was selected to take the next person from Agent "
-                + cfp.getSender().getLocalName());
+        try {
+            Person person = (Person) accept.getContentObject();
+            System.out.println(myAgent.getLocalName() + ": I was selected to take the next person (ID: " + person.getId() + ") from Agent "
+                    + cfp.getSender().getLocalName());
+        } catch (UnreadableException e) {
+            e.printStackTrace();
+        }
+
 
         return reply;
     }

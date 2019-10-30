@@ -2,11 +2,12 @@ package agents;
 
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorAnswerer;
 
-import java.util.Vector;
 import java.util.Random;
+import java.util.Vector;
 
 public class InspectorAgent extends AbstractAgent {
 
@@ -53,4 +54,13 @@ public class InspectorAgent extends AbstractAgent {
         this.isBusy = !this.isBusy;
     }
 
+    @Override
+    public void movedPerson() {
+
+    }
+
+    @Override
+    public Person getPerson() {
+        return null;
+    }
 }

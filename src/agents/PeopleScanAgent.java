@@ -2,6 +2,7 @@ package agents;
 
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import models.Person;
 import utils.contracts.QueueSizeAnswerer;
 
 public class PeopleScanAgent extends AbstractAgent {
@@ -12,5 +13,14 @@ public class PeopleScanAgent extends AbstractAgent {
         setServiceDescription("scan");
 
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+    }
+
+    @Override
+    public void movedPerson() {
+    }
+
+    @Override
+    public Person getPerson() {
+        return null;
     }
 }

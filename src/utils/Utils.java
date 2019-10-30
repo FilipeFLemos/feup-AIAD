@@ -8,13 +8,16 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.proto.SubscriptionInitiator;
+import models.Person;
 import utils.contracts.LateInspectorAgentSubscription;
 import utils.contracts.LateLuggageAgentSubscription;
 import utils.contracts.LateScanAgentSubscription;
 import utils.contracts.QueueSizeQuery;
-//import utils.contracts.ClosestInspectorQuery.java;
 
 import java.util.Vector;
+import java.util.concurrent.ThreadLocalRandom;
+
+//import utils.contracts.ClosestInspectorQuery.java;
 
 public class Utils {
 
@@ -24,6 +27,21 @@ public class Utils {
     public static int MAX_LUGGAGE_CAPACITY = 5;
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
     public static int MAX_INSPECTOR_DISTANCE = 1000;
+    public static int QUEUE_MIN_FREQUENCY = 30;
+    public static int QUEUE_MAX_FREQUENCY = 35;
+    public static int MAX_THREADS = 30;
+    public static int LUGGAGE_PROCESSING_TIME = 10;
+
+    /**
+     * Generates a random number.
+     *
+     * @param min the min - the minimum number
+     * @param max the max - the maximum number
+     * @return the random number between them
+     */
+    public static int getRandom(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
 
     private static DFAgentDescription getDFAgentDescriptionTemplate(String type) {
         DFAgentDescription template = new DFAgentDescription();
@@ -56,10 +74,9 @@ public class Utils {
         agent.addBehaviour(new QueueSizeQuery(agent, msg, "scan"));
     }
 
-    public static SubscriptionInitiator lateSubscriptionFactoryMethod(Agent agent, String agentType){
+    public static SubscriptionInitiator lateSubscriptionFactoryMethod(Agent agent, String agentType) {
         DFAgentDescription template = Utils.getDFAgentDescriptionTemplate(agentType);
-        switch (agentType)
-        {
+        switch (agentType) {
             case "luggage":
                 return new LateLuggageAgentSubscription(agent, template);
             case "scan":
@@ -67,7 +84,7 @@ public class Utils {
             case "inspector":
                 return new LateInspectorAgentSubscription(agent, template);
             default:
-                return new SubscriptionInitiator(agent,null);
+                return new SubscriptionInitiator(agent, null);
         }
     }
 }
