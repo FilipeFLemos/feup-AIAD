@@ -7,138 +7,161 @@ import jade.core.ProfileImpl;
 import jade.core.Runtime;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
+import models.Person;
+import models.PersonType;
 import utils.Utils;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import static utils.Utils.MAX_THREADS;
 
 public class Launcher {
 
-	private ArrayList<LuggageAgent> luggageAgents;
-	private ArrayList<PeopleScanAgent> peopleScanAgents;
-	private ArrayList<InspectorAgent> inspectorAgents;
-	private QueueManagerAgent queueManagerAgent;
+    private static ContainerController mainContainer;
+    private ArrayList<LuggageAgent> luggageAgents;
+    private ArrayList<PeopleScanAgent> peopleScanAgents;
+    private ArrayList<InspectorAgent> inspectorAgents;
+    private QueueManagerAgent queueManagerAgent;
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(MAX_THREADS);
+    private Queue waitingQueue;
+    private boolean stopSystem;
+    private int personId = 0;
 
-	private static ContainerController mainContainer;
+    public Launcher() {
+        luggageAgents = new ArrayList<>();
+        peopleScanAgents = new ArrayList<>();
+        inspectorAgents = new ArrayList<>();
+        waitingQueue = new LinkedList<Person>();
+        stopSystem = false;
 
-	public Launcher(){
-		luggageAgents = new ArrayList<>();
-		peopleScanAgents = new ArrayList<>();
-		inspectorAgents = new ArrayList<>();
+        try {
+            mainContainer.acceptNewAgent("myRMA", new jade.tools.rma.rma()).start();
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
 
-		try {
-			mainContainer.acceptNewAgent("myRMA", new jade.tools.rma.rma()).start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
+        startAgents();
+        scheduledExecutorService.schedule(this::allocatePerson, 0, TimeUnit.MILLISECONDS);
 
-		startAgents();
+        while (!stopSystem) {
+            int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
+            scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.SECONDS);
+            try {
+                Thread.sleep(Utils.getMilliSeconds(randomWait));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-		queueManagerAgent.allocateLuggage();
-		Utils.allocatePersonToBeScanned(queueManagerAgent);
-	}
+    public static void main(String[] args) {
+        Runtime rt = Runtime.instance();
 
-	public static void main(String[] args) {
-		Runtime rt = Runtime.instance();
+        Profile p1 = new ProfileImpl();
+        // p1.setParameter(...);
+        mainContainer = rt.createMainContainer(p1);
 
-		Profile p1 = new ProfileImpl();
-		//p1.setParameter(...);
-		mainContainer = rt.createMainContainer(p1);
-		
-		Profile p2 = new ProfileImpl();
-		//p2.setParameter(...);
-		ContainerController container = rt.createAgentContainer(p2);
+        Profile p2 = new ProfileImpl();
+        // p2.setParameter(...);
+        ContainerController container = rt.createAgentContainer(p2);
 
-		Launcher l = new Launcher();
+        Launcher l = new Launcher();
+    }
 
-		/*AgentController ac1;
-		try {
-			ac1 = mainContainer.acceptNewAgent("Antonio", new ListeningAgent());
-			ac1.start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
+    private void startAgents() {
+        for (int i = 0; i < Utils.NUM_LUGGAGE_AGENTS; i++) {
+            LuggageAgent luggageAgent = new LuggageAgent();
+            try {
+                mainContainer.acceptNewAgent("luggageControl" + i, luggageAgent).start();
+            } catch (StaleProxyException e) {
+                e.printStackTrace();
+            }
+            luggageAgents.add(luggageAgent);
+        }
 
-		Object[] agentArgs = new Object[0];
-		AgentController ac2;
-		try {
-			ac2 = container.createNewAgent("Rui", "jade.core.Agent", agentArgs);
-			ac2.start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
+        luggageAgents.get(0).setHasIrregularLuggage(true);
+        luggageAgents.get(1).setHasIrregularLuggage(true);
 
+        for (int i = 0; i < Utils.NUM_PEOPLE_AGENTS; i++) {
+            PeopleScanAgent peopleScanAgent = new PeopleScanAgent();
+            try {
+                mainContainer.acceptNewAgent("peopleScanner" + i, peopleScanAgent).start();
+            } catch (StaleProxyException e) {
+                e.printStackTrace();
+            }
+            peopleScanAgents.add(peopleScanAgent);
+        }
 
-		AgentController ac5;
-		try {
-			ac5 = container.createNewAgent("Seller1", "bookTrading.BookSellerAgent", agentArgs);
-			ac5.start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
+        for (int i = 0; i < Utils.NUM_INSPECTOR_AGENTS; i++) {
+            InspectorAgent inspectorAgent = new InspectorAgent();
+            try {
+                mainContainer.acceptNewAgent("inspector" + i, inspectorAgent).start();
+            } catch (StaleProxyException e) {
+                e.printStackTrace();
+            }
+            inspectorAgents.add(inspectorAgent);
+        }
 
-		AgentController ac6;
-		try {
-			ac6 = container.createNewAgent("Seller2", "bookTrading.BookSellerAgent", agentArgs);
-			ac6.start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
+        queueManagerAgent = new QueueManagerAgent();
+        try {
+            mainContainer.acceptNewAgent("queueManager", queueManagerAgent).start();
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
+    }
 
-		AgentController ac4;
-		try {
-			ac4 = container.createNewAgent("Buyer1", "bookTrading.BookBuyerAgent", new String[]{"TINTIM"});
-			ac4.start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
+    private void enqueue() {
+        Person person = generatePerson();
+        waitingQueue.add(person);
+    }
 
-		AgentController ac3;
-		try {
-			ac3 = mainContainer.acceptNewAgent("myRMA", new jade.tools.rma.rma());
-			ac3.start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}*/
+    private Person generatePerson() {
+        Person person = null;
+        int randomPersonType = Utils.getRandom(0, 1);
+        switch (randomPersonType) {
+            case 0:
+                person = new Person(PersonType.Empty, personId);
+                break;
+            case 1:
+                person = new Person(PersonType.Luggage, personId);
+                break;
+        }
+        personId++;
+        return person;
+    }
 
-	}
+    private void allocatePerson() {
+        while(!stopSystem) {
 
-	private void startAgents() {
-		for (int i = 0; i < Utils.NUM_LUGGAGE_AGENTS; i++) {
-			LuggageAgent luggageAgent = new LuggageAgent();
-			try {
-				mainContainer.acceptNewAgent("luggageControl" + i, luggageAgent).start();
-			} catch (StaleProxyException e) {
-				e.printStackTrace();
-			}
-			luggageAgents.add(luggageAgent);
-		}
+            if (!waitingQueue.isEmpty() && queueManagerAgent.isQueueEmpty()) {
+                Person person = (Person) waitingQueue.poll();
+                if (person == null) {
+                    return;
+                }
+                queueManagerAgent.enqueue(person);
+                switch (person.getPersonType()) {
+                    case Empty:
+                        System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: " + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
+                        Utils.allocatePersonToBeScanned(queueManagerAgent);
+                        break;
+                    case Luggage:
+                        System.out.println(queueManagerAgent.getLocalName() + ": The person with luggage (ID: " + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
+                        queueManagerAgent.allocateLuggage();
+                        break;
+                }
+            }
 
-		for (int i = 0; i < Utils.NUM_PEOPLE_AGENTS; i++) {
-			PeopleScanAgent peopleScanAgent = new PeopleScanAgent();
-			try {
-				mainContainer.acceptNewAgent("peopleScanner" + i, peopleScanAgent).start();
-			} catch (StaleProxyException e) {
-				e.printStackTrace();
-			}
-			peopleScanAgents.add(peopleScanAgent);
-		}
-
-		for (int i = 0; i < Utils.NUM_INSPECTOR_AGENTS; i++) {
-			InspectorAgent inspectorAgent = new InspectorAgent();
-			try {
-				mainContainer.acceptNewAgent("inspector" + i, inspectorAgent).start();
-			} catch (StaleProxyException e) {
-				e.printStackTrace();
-			}
-			inspectorAgents.add(inspectorAgent);
-		}
-
-		queueManagerAgent = new QueueManagerAgent();
-		try {
-			mainContainer.acceptNewAgent("queueManager", queueManagerAgent).start();
-		} catch (StaleProxyException e) {
-			e.printStackTrace();
-		}
-	}
+            try {
+                Thread.sleep(Utils.getMilliSeconds(Utils.REQUERY_DELAY));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }

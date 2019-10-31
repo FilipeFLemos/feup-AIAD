@@ -2,36 +2,82 @@ package agents;
 
 import jade.core.AID;
 import jade.core.Agent;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
+import models.Person;
 
-public abstract class AbstractAgent extends Agent {
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Vector;
 
-    private int queueSize = 0;
-    private AID queueManager = null;
+public class AbstractAgent extends Agent {
 
+    Queue agentQueue = new LinkedList<Person>();
+    Vector<AID> luggageAgents;
+    Vector<AID> peopleScanAgents;
+    State state;
 
-    @Override
-    public int getQueueSize() {
-        return queueSize;
+    void setServiceDescription(String type) {
+        DFAgentDescription dfAgentDescription = new DFAgentDescription();
+        dfAgentDescription.setName(getAID());
+
+        ServiceDescription serviceDescription = new ServiceDescription();
+        serviceDescription.setType(type);
+        serviceDescription.setName(getLocalName());
+        dfAgentDescription.addServices(serviceDescription);
+        try {
+            DFService.register(this, dfAgentDescription);
+        } catch (FIPAException fe) {
+            fe.printStackTrace();
+        }
     }
 
-    public AID getQueueManager() {
-        return queueManager;
+    public boolean isQueueEmpty() {
+        return agentQueue.isEmpty();
     }
 
-    @Override
-    public void setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
+    public int getAgentQueueSize() {
+        return agentQueue.size();
     }
 
-    public void setQueueManager(AID queueManager) {
-        this.queueManager = queueManager;
+    public void enqueue(Person person) {
+        agentQueue.add(person);
     }
 
-    public void increaseQueueSize(){
-        queueSize++;
+    public void movedPerson() {
+        agentQueue.poll();
     }
 
-    public void decreaseQueueSize(){
-        queueSize--;
+    public Person getPerson() {
+        if (!agentQueue.isEmpty()) {
+            return (Person) agentQueue.peek();
+        }
+        return null;
+    }
+
+    public Vector<AID> getPeopleScanAgents() {
+        return peopleScanAgents;
+    }
+
+    void setPeopleScanAgents(Vector<AID> peopleScanAgents) {
+        this.peopleScanAgents = peopleScanAgents;
+    }
+
+    public Vector<AID> getLuggageAgents() {
+        return luggageAgents;
+    }
+
+    void setLuggageAgents(Vector<AID> luggageAgents) {
+        this.luggageAgents = luggageAgents;
+    }
+
+    void processPerson() {
+    }
+
+    enum State {
+        IDLE,
+        WORKING
     }
 }

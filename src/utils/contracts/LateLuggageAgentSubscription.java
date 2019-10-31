@@ -1,6 +1,6 @@
 package utils.contracts;
 
-import agents.AbstractAgent;
+import agents.QueueManagerAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -9,9 +9,9 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.proto.SubscriptionInitiator;
 
-public class LateScanAgentSubscription extends SubscriptionInitiator {
+public class LateLuggageAgentSubscription extends SubscriptionInitiator {
 
-    public LateScanAgentSubscription(Agent agent, DFAgentDescription dfad) {
+    public LateLuggageAgentSubscription(Agent agent, DFAgentDescription dfad) {
         super(agent, DFService.createSubscriptionMessage(agent, agent.getDefaultDF(), dfad, null));
     }
 
@@ -21,10 +21,11 @@ public class LateScanAgentSubscription extends SubscriptionInitiator {
             DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent());
             for (DFAgentDescription dfd : dfds) {
                 AID agent = dfd.getName();
-                AbstractAgent abstractAgent = (AbstractAgent) myAgent;
-                if (!abstractAgent.getPeopleScanAgents().contains(agent)) {
-                    abstractAgent.getPeopleScanAgents().add(agent);
-                    System.out.println(myAgent.getLocalName() + ": New people-scan-agent in town: " + agent.getLocalName() + ", now have " + abstractAgent.getPeopleScanAgents().size());
+                QueueManagerAgent queueManagerAgent = (QueueManagerAgent) myAgent;
+
+                if (!queueManagerAgent.getLuggageAgents().contains(agent)) {
+                    queueManagerAgent.getLuggageAgents().add(agent);
+                    System.out.println(myAgent.getLocalName() + ": New luggage-agent in town: " + agent.getLocalName() + ", now have " + queueManagerAgent.getLuggageAgents().size());
                 }
             }
         } catch (FIPAException fe) {
