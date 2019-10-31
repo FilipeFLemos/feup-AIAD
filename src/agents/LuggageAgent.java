@@ -3,6 +3,7 @@ package agents;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import models.Person;
@@ -21,6 +22,7 @@ public class LuggageAgent extends AbstractAgent {
     public LuggageAgent() {
         setPeopleScanAgents(new Vector<>());
         hasIrregularLuggage = randomizeHasIrregularLuggage();
+        state = State.IDLE;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class LuggageAgent extends AbstractAgent {
         findAvailableAgents();
         acceptNewAgents();
 
-        addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP),Utils.MAX_LUGGAGE_CAPACITY));
+        addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP), Utils.MAX_LUGGAGE_CAPACITY));
         addBehaviour(new ScanLuggage());
         //Utils.allocatePersonToBeScanned(this);
         //System.out.println("Irreg " + getHasIrregularLuggage());
@@ -78,21 +80,25 @@ public class LuggageAgent extends AbstractAgent {
     private class ScanLuggage extends CyclicBehaviour {
         public void action() {
 
-            if(agentQueue.isEmpty()){
-                block();
-            }
-            else{
-                Person person = (Person) agentQueue.poll();
+            if (state == State.IDLE) {
+                if (agentQueue.isEmpty()) {
+                    block();
+                } else {
+                    state = State.WORKING;
+                    myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
+                        @Override
+                        protected void onWake() {
+                            Person person = (Person) agentQueue.peek();
+                            //TODO: if something smelly chamar inspector
 
-                int milliseconds = Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME);
-//                try {
-//                    Thread.sleep(milliseconds);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-                //TODO: if something smelly chamar inspector
-                person.stopTimer();
-                System.out.println("Finished scanning");
+                            //If everything is okay
+                            person.stopTimer();
+                            System.out.println("Finished scanning luggage");
+                            state = State.IDLE;
+                            agentQueue.poll();
+                        }
+                    });
+                }
             }
         }
     }

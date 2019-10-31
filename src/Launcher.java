@@ -139,7 +139,7 @@ public class Launcher {
             queueManagerAgent.enqueue(person);
             switch (person.getPersonType()) {
                 case Empty:
-                    System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: " + person.getId() + ") is being allocated..."+ queueManagerAgent.getPerson().getId());
+                    System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: " + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
                     Utils.allocatePersonToBeScanned(queueManagerAgent);
                     break;
                 case Luggage:

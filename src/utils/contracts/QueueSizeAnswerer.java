@@ -25,10 +25,9 @@ public class QueueSizeAnswerer extends ContractNetResponder {
         ACLMessage reply = cfp.createReply();
 
         int queueSpace = abstractAgent.getAgentQueueSize();
-        if(queueSpace == maxQueueSize){
+        if (queueSpace == maxQueueSize) {
             reply.setPerformative(ACLMessage.REFUSE);
-        }
-        else{
+        } else {
             reply.setPerformative(ACLMessage.PROPOSE);
             try {
                 reply.setContentObject(queueSpace);

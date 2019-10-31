@@ -27,7 +27,7 @@ public class Person implements Serializable {
         return String.valueOf(id);
     }
 
-    public void stopTimer(){
+    public void stopTimer() {
 
     }
 }

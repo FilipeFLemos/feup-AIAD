@@ -17,6 +17,7 @@ public class AbstractAgent extends Agent {
     Queue agentQueue = new LinkedList<Person>();
     Vector<AID> luggageAgents;
     Vector<AID> peopleScanAgents;
+    State state;
 
     void setServiceDescription(String type) {
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
@@ -33,24 +34,24 @@ public class AbstractAgent extends Agent {
         }
     }
 
-    public boolean isQueueEmpty(){
+    public boolean isQueueEmpty() {
         return agentQueue.isEmpty();
     }
 
-    public int getAgentQueueSize(){
+    public int getAgentQueueSize() {
         return agentQueue.size();
     }
 
-    public void enqueue(Person person){
+    public void enqueue(Person person) {
         agentQueue.add(person);
     }
 
-    public void movedPerson(){
+    public void movedPerson() {
         agentQueue.poll();
     }
 
-    public Person getPerson(){
-        if(!agentQueue.isEmpty()){
+    public Person getPerson() {
+        if (!agentQueue.isEmpty()) {
             return (Person) agentQueue.peek();
         }
         return null;
@@ -73,5 +74,10 @@ public class AbstractAgent extends Agent {
     }
 
     void processPerson() {
+    }
+
+    enum State {
+        IDLE,
+        WORKING
     }
 }

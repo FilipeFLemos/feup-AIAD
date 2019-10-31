@@ -8,7 +8,6 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import jade.proto.SubscriptionInitiator;
-import models.Person;
 import utils.contracts.LateInspectorAgentSubscription;
 import utils.contracts.LateLuggageAgentSubscription;
 import utils.contracts.LateScanAgentSubscription;
@@ -45,8 +44,8 @@ public class Utils {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
-    public static int getMilliSeconds(int seconds){
-        return seconds*1000;
+    public static int getMilliSeconds(int seconds) {
+        return seconds * 1000;
     }
 
     private static DFAgentDescription getDFAgentDescriptionTemplate(String type) {
