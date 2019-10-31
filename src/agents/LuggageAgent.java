@@ -85,6 +85,7 @@ public class LuggageAgent extends AbstractAgent {
                     block();
                 } else {
                     state = State.WORKING;
+                    System.out.println(myAgent.getLocalName() + ": Going to start scanning the luggage of Person (ID: " + ((Person) agentQueue.peek()).getId() + ")");
                     myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
                         @Override
                         protected void onWake() {
@@ -93,7 +94,7 @@ public class LuggageAgent extends AbstractAgent {
 
                             //If everything is okay
                             person.stopTimer();
-                            System.out.println("Finished scanning luggage");
+                            System.out.println(myAgent.getLocalName() + ": Finished scanning the luggage of Person (ID: " + ((Person) agentQueue.peek()).getId() + ")");
                             state = State.IDLE;
                             agentQueue.poll();
                         }
