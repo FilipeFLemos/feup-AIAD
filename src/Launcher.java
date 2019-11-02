@@ -84,9 +84,6 @@ public class Launcher {
             luggageAgents.add(luggageAgent);
         }
 
-        luggageAgents.get(0).setHasIrregularLuggage(true);
-        luggageAgents.get(1).setHasIrregularLuggage(true);
-
         for (int i = 0; i < Utils.NUM_PEOPLE_AGENTS; i++) {
             PeopleScanAgent peopleScanAgent = new PeopleScanAgent();
             try {
@@ -117,6 +114,11 @@ public class Launcher {
 
     private void enqueue() {
         Person person = generatePerson();
+        System.out.println("Person Type: " + person.getPersonType());
+        if (person.getPersonType().equals("luggage")) {
+            System.out.println("Irregular? " + person.getHasIrregularLuggage());
+
+        }
         waitingQueue.add(person);
     }
 
@@ -124,19 +126,19 @@ public class Launcher {
         Person person = null;
         int randomPersonType = Utils.getRandom(0, 1);
         switch (randomPersonType) {
-            case 0:
-                person = new Person(PersonType.Empty, personId);
-                break;
-            case 1:
-                person = new Person(PersonType.Luggage, personId);
-                break;
+        case 0:
+            person = new Person(PersonType.Empty, personId);
+            break;
+        case 1:
+            person = new Person(PersonType.Luggage, personId);
+            break;
         }
         personId++;
         return person;
     }
 
     private void allocatePerson() {
-        while(!stopSystem) {
+        while (!stopSystem) {
 
             if (!waitingQueue.isEmpty() && queueManagerAgent.isQueueEmpty()) {
                 Person person = (Person) waitingQueue.poll();
@@ -145,14 +147,16 @@ public class Launcher {
                 }
                 queueManagerAgent.enqueue(person);
                 switch (person.getPersonType()) {
-                    case Empty:
-                        System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: " + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
-                        Utils.allocatePersonToBeScanned(queueManagerAgent);
-                        break;
-                    case Luggage:
-                        System.out.println(queueManagerAgent.getLocalName() + ": The person with luggage (ID: " + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
-                        queueManagerAgent.allocateLuggage();
-                        break;
+                case Empty:
+                    System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: "
+                            + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
+                    Utils.allocatePersonToBeScanned(queueManagerAgent);
+                    break;
+                case Luggage:
+                    System.out.println(queueManagerAgent.getLocalName() + ": The person with luggage (ID: "
+                            + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
+                    queueManagerAgent.allocateLuggage();
+                    break;
                 }
             }
 

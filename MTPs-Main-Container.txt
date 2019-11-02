@@ -1,1 +1,1 @@
-http://DESKTOP-VU76DFB.home:7778/acc
+http://TripleZero:7778/acc

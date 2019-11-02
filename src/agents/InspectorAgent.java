@@ -10,19 +10,19 @@ import java.util.Vector;
 
 public class InspectorAgent extends AbstractAgent {
 
-    private int distance;
+    private double distance;
     private boolean isBusy;
 
     public InspectorAgent() {
+        state = State.IDLE;
         setPeopleScanAgents(new Vector<>());
-        distance = randomNumber(51);
+        distance = randomNumber(1000);
         System.out.println("Distance " + distance);
-        isBusy = (randomNumber(101) < 50) ? true : false;
     }
 
-    public int randomNumber(int i) {
+    public double randomNumber(int i) {
         Random rand = new Random();
-        return rand.nextInt(i);
+        return Math.round((rand.nextFloat() * i) * 100.0) / 100.0;
     }
 
     @Override
@@ -37,20 +37,20 @@ public class InspectorAgent extends AbstractAgent {
 
     }
 
-    public int getInspectorDistance() {
+    public double getInspectorDistance() {
         return distance;
     }
 
-    public boolean getIsBusy() {
-        return isBusy;
-    }
+    // public boolean getIsBusy() {
+    // return isBusy;
+    // }
 
-    public void setIsBusy(boolean isBusy) {
-        this.isBusy = isBusy;
-    }
+    // public void setIsBusy(boolean isBusy) {
+    // this.isBusy = isBusy;
+    // }
 
-    public void toggleIsBusy() {
-        this.isBusy = !this.isBusy;
-    }
+    // public void toggleIsBusy() {
+    // this.isBusy = !this.isBusy;
+    // }
 
 }

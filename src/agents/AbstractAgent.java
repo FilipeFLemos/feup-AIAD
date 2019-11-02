@@ -77,7 +77,6 @@ public class AbstractAgent extends Agent {
     }
 
     enum State {
-        IDLE,
-        WORKING
+        IDLE, WORKING, MOVING
     }
 }

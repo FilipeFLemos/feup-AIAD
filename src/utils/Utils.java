@@ -25,13 +25,14 @@ public class Utils {
     public static int NUM_INSPECTOR_AGENTS = 3;
     public static int MAX_LUGGAGE_CAPACITY = 5;
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
-    public static int MAX_INSPECTOR_DISTANCE = 1000;
+    public static float MAX_INSPECTOR_DISTANCE = 1000f;
     public static int QUEUE_MIN_FREQUENCY = 30;
     public static int QUEUE_MAX_FREQUENCY = 35;
     public static int MAX_THREADS = 30;
     public static int LUGGAGE_PROCESSING_TIME = 10;
     public static int REQUERY_DELAY = 1;
     public static int SCANNING_TIME = 5;
+    public static float INSPECTOR_SPEED = 1.5f;
 
     /**
      * Generates a random number.
@@ -82,14 +83,14 @@ public class Utils {
     public static SubscriptionInitiator lateSubscriptionFactoryMethod(Agent agent, String agentType) {
         DFAgentDescription template = Utils.getDFAgentDescriptionTemplate(agentType);
         switch (agentType) {
-            case "luggage":
-                return new LateLuggageAgentSubscription(agent, template);
-            case "scan":
-                return new LateScanAgentSubscription(agent, template);
-            case "inspector":
-                return new LateInspectorAgentSubscription(agent, template);
-            default:
-                return new SubscriptionInitiator(agent, null);
+        case "luggage":
+            return new LateLuggageAgentSubscription(agent, template);
+        case "scan":
+            return new LateScanAgentSubscription(agent, template);
+        case "inspector":
+            return new LateInspectorAgentSubscription(agent, template);
+        default:
+            return new SubscriptionInitiator(agent, null);
         }
     }
 }

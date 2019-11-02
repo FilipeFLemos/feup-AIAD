@@ -4,7 +4,9 @@ import agents.InspectorAgent;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetResponder;
+import models.Person;
 
 import java.io.IOException;
 
@@ -20,8 +22,8 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
         try {
-            int distance = inspectorAgent.getInspectorDistance();
-            if (!inspectorAgent.getIsBusy()) {
+            double distance = inspectorAgent.getInspectorDistance();
+            if (true) {
                 reply.setContentObject(distance);
             }
         } catch (IOException e) {
@@ -35,13 +37,19 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
     @Override
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
 
+        InspectorAgent inspectorAgent = (InspectorAgent) myAgent;
+
         ACLMessage reply = accept.createReply();
         reply.setPerformative(ACLMessage.INFORM);
         reply.setContent("Will be done");
-        ((InspectorAgent) myAgent).toggleIsBusy();
-
-        System.out.println(myAgent.getLocalName() + ": I was selected to check the irregularity from Agent "
-                + cfp.getSender().getLocalName());
+        try {
+            Person person = (Person) accept.getContentObject();
+            inspectorAgent.enqueue(person);
+            System.out.println(myAgent.getLocalName() + ": I was selected to check the person's (ID: " + person.getId()
+                    + ") irregularity from Agent " + cfp.getSender().getLocalName());
+        } catch (UnreadableException e) {
+            e.printStackTrace();
+        }
 
         return reply;
     }

@@ -32,12 +32,13 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
-        int min = Utils.MAX_INSPECTOR_DISTANCE;
+        double min = Utils.MAX_INSPECTOR_DISTANCE;
+        System.out.println("double");
         for (Object response : responses) {
-            int curr = Utils.MAX_INSPECTOR_DISTANCE;
+            double curr = Utils.MAX_INSPECTOR_DISTANCE;
             try {
-                if (null != (Integer) ((ACLMessage) response).getContentObject()) {
-                    curr = (Integer) ((ACLMessage) response).getContentObject();
+                if (null != (Double) ((ACLMessage) response).getContentObject()) {
+                    curr = (Double) ((ACLMessage) response).getContentObject();
                 }
             } catch (UnreadableException e) {
                 e.printStackTrace();
@@ -54,7 +55,7 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
                 ACLMessage msg = current.createReply();
                 if (null != ((ACLMessage) response).getContentObject()) {
 
-                    if (!chosen && (Integer) ((ACLMessage) response).getContentObject() == min) {
+                    if (!chosen && (Double) ((ACLMessage) response).getContentObject() == min) {
                         msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                         chosen = true;
 
