@@ -1,5 +1,7 @@
 package utils.contracts;
 
+import agents.AbstractAgent;
+import agents.InspectorAgent;
 import agents.LuggageAgent;
 import jade.core.AID;
 import jade.core.Agent;
@@ -8,6 +10,7 @@ import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetInitiator;
 import utils.Utils;
 
+import java.io.IOException;
 import java.util.Vector;
 
 public class ClosestInspectorQuery extends ContractNetInitiator {
@@ -31,6 +34,8 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
 
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
+        // AbstractAgent abstractAgent = (AbstractAgent) myAgent;
+        AbstractAgent inspectorAgent = (AbstractAgent) myAgent;
 
         double min = Utils.MAX_INSPECTOR_DISTANCE;
         System.out.println("double");
@@ -57,9 +62,17 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
 
                     if (!chosen && (Double) ((ACLMessage) response).getContentObject() == min) {
                         msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                        try {
+                            System.out.println("Entras? " + inspectorAgent.getPerson());
+                            msg.setContentObject(inspectorAgent.getPerson());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         chosen = true;
+                        inspectorAgent.movedPerson();
+                    }
 
-                    } else
+                    else
                         msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
                 }
 

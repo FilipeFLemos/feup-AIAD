@@ -64,13 +64,11 @@ public class LuggageAgent extends AbstractAgent {
         public void action() {
 
             if (state == State.IDLE) {
-                System.out.println("IDLE");
 
                 if (agentQueue.isEmpty()) {
                     block();
                 } else {
                     state = State.WORKING;
-                    System.out.println("WORKING");
 
                     System.out.println(myAgent.getLocalName() + ": Going to start scanning the luggage of Person (ID: "
                             + ((Person) agentQueue.peek()).getId() + ")");
@@ -79,9 +77,10 @@ public class LuggageAgent extends AbstractAgent {
                                 @Override
                                 protected void onWake() {
                                     Person person = (Person) agentQueue.peek();
-                                    System.out.println("PEEK");
-                                    System.out.println("Person " + person.getId() + " type " + person.getPersonType()
-                                            + " irregular? " + person.getHasIrregularLuggage());
+
+                                    if (person.getHasIrregularLuggage()) {
+                                        allocateClosestInspector(myAgent);
+                                    }
 
                                     // TODO: if something smelly chamar inspector
 

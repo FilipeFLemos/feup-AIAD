@@ -9,15 +9,15 @@ public class Person implements Serializable {
     private int id;
     private int waitingTimeInSeconds;
     private PersonType personType;
-    private boolean hasIrregularLuggage = false;
+    private boolean hasIrregularLuggage;
 
     public Person(PersonType personType, int id) {
         this.waitingTimeInSeconds = 0;
         this.personType = personType;
         this.id = id;
 
-        if (personType.equals("Luggage")) {
-            hasIrregularLuggage = this.randomizeHasIrregularLuggage();
+        if ((personType.toString()).equals("Luggage")) {
+            this.randomizeHasIrregularLuggage();
         }
     }
 
@@ -45,11 +45,9 @@ public class Person implements Serializable {
 
     }
 
-    public boolean randomizeHasIrregularLuggage() {
+    public void randomizeHasIrregularLuggage() {
         Random rand = new Random();
-        if (rand.nextInt(101) > 90) {
-            return true;
-        }
-        return false;
+        boolean isIrregular = (rand.nextInt(2) < 1) ? true : false;
+        setHasIrregularLuggage(isIrregular);
     }
 }

@@ -124,12 +124,12 @@ public class Launcher {
 
     private Person generatePerson() {
         Person person = null;
-        int randomPersonType = Utils.getRandom(0, 1);
+        int randomPersonType = Utils.getRandom(0, 4);
         switch (randomPersonType) {
         case 0:
             person = new Person(PersonType.Empty, personId);
             break;
-        case 1:
+        default:
             person = new Person(PersonType.Luggage, personId);
             break;
         }
