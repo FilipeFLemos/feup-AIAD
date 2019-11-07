@@ -26,8 +26,8 @@ public class Utils {
     public static int MAX_LUGGAGE_CAPACITY = 5;
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
     public static float MAX_INSPECTOR_DISTANCE = 1000f;
-    public static int QUEUE_MIN_FREQUENCY = 30;
-    public static int QUEUE_MAX_FREQUENCY = 35;
+    public static int QUEUE_MIN_FREQUENCY = 5;
+    public static int QUEUE_MAX_FREQUENCY = 10;
     public static int MAX_THREADS = 30;
     public static int LUGGAGE_PROCESSING_TIME = 10;
     public static int REQUERY_DELAY = 1;

@@ -33,11 +33,6 @@ public class LuggageAgent extends AbstractAgent {
         addBehaviour(new QueueSizeAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP),
                 Utils.MAX_LUGGAGE_CAPACITY));
         addBehaviour(new ScanLuggage());
-        // Utils.allocatePersonToBeScanned(this);
-        // System.out.println("Irreg " + getHasIrregularLuggage());
-        /*
-         * if (getHasIrregularLuggage()) allocateClosestInspector(this);
-         */
     }
 
     private void findAvailableAgents() {
@@ -61,6 +56,8 @@ public class LuggageAgent extends AbstractAgent {
     }
 
     private class ScanLuggage extends CyclicBehaviour {
+        private Person person;
+
         public void action() {
 
             if (state == State.IDLE) {
@@ -72,27 +69,39 @@ public class LuggageAgent extends AbstractAgent {
 
                     System.out.println(myAgent.getLocalName() + ": Going to start scanning the luggage of Person (ID: "
                             + ((Person) agentQueue.peek()).getId() + ")");
+
                     myAgent.addBehaviour(
                             new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
                                 @Override
                                 protected void onWake() {
-                                    Person person = (Person) agentQueue.peek();
+                                    person = (Person) agentQueue.peek();
+
 
                                     if (person.getHasIrregularLuggage()) {
+                                        state = State.ALLOCATING;
                                         allocateClosestInspector(myAgent);
+                                    } else {
+                                        System.out.println(myAgent.getLocalName()
+                                                + ": Finished scanning the luggage of Person (ID: "
+                                                + ((Person) agentQueue.peek()).getId() + ")");
+                                        state = State.IDLE;
+                                        person = null;
+                                        agentQueue.poll();
                                     }
 
-                                    // TODO: if something smelly chamar inspector
-
-                                    // If everything is okay
-                                    person.stopTimer();
-                                    System.out.println(
-                                            myAgent.getLocalName() + ": Finished scanning the luggage of Person (ID: "
-                                                    + ((Person) agentQueue.peek()).getId() + ")");
-                                    state = State.IDLE;
-                                    agentQueue.poll();
                                 }
                             });
+                }
+            } else if (state == State.ALLOCATING) {
+                if (agentQueue.isEmpty() || !agentQueue.peek().equals(person)) {
+                    System.out.println(myAgent.getLocalName()
+                            + ": Delivered Person (ID: "
+                            + person.getId() + ")");
+                    state = State.IDLE;
+                    person = null;
+
+                } else {
+                    block();
                 }
             }
         }

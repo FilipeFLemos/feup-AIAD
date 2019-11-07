@@ -42,12 +42,12 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         reply.setContent("Will be done");
         try {
             Person person = (Person) accept.getContentObject();
-            System.out.println(" Accept " + accept.getContentObject());
-            System.out.println("Person " + person);
+            // System.out.println(" Accept " + accept.getContentObject());
+            // System.out.println("Person " + person);
             inspectorAgent.enqueue(person);
-            System.out.println("Agent local name " + myAgent.getLocalName());
-            System.out.println("Person ID " + person.getId());
-            System.out.println("From Agent " + cfp.getSender().getLocalName());
+            // System.out.println("Agent local name " + myAgent.getLocalName());
+            // System.out.println("Person ID " + person.getId());
+            // System.out.println("From Agent " + cfp.getSender().getLocalName());
             System.out.println(myAgent.getLocalName() + ": I was selected to check the person's (ID: " + person.getId()
                     + ") irregularity from Agent " + cfp.getSender().getLocalName());
         } catch (UnreadableException e) {

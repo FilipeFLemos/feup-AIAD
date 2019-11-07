@@ -38,7 +38,6 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
         AbstractAgent inspectorAgent = (AbstractAgent) myAgent;
 
         double min = Utils.MAX_INSPECTOR_DISTANCE;
-        System.out.println("double");
         for (Object response : responses) {
             double curr = Utils.MAX_INSPECTOR_DISTANCE;
             try {
@@ -63,7 +62,6 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
                     if (!chosen && (Double) ((ACLMessage) response).getContentObject() == min) {
                         msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                         try {
-                            System.out.println("Entras? " + inspectorAgent.getPerson());
                             msg.setContentObject(inspectorAgent.getPerson());
                         } catch (IOException e) {
                             e.printStackTrace();

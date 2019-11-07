@@ -48,15 +48,15 @@ public class Launcher {
         startAgents();
         scheduledExecutorService.schedule(this::allocatePerson, 0, TimeUnit.MILLISECONDS);
 
-        while (!stopSystem) {
-            int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
-            scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.SECONDS);
-            try {
-                Thread.sleep(Utils.getMilliSeconds(randomWait));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
+        scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.SECONDS);
+        /*
+         * while (!stopSystem) { int randomWait = Utils.getRandom(0,
+         * Utils.QUEUE_MAX_FREQUENCY); scheduledExecutorService.schedule(this::enqueue,
+         * randomWait, TimeUnit.SECONDS); try {
+         * Thread.sleep(Utils.getMilliSeconds(randomWait)); } catch
+         * (InterruptedException e) { e.printStackTrace(); } }
+         */
     }
 
     public static void main(String[] args) {
@@ -115,11 +115,9 @@ public class Launcher {
     private void enqueue() {
         Person person = generatePerson();
         System.out.println("Person Type: " + person.getPersonType());
-        if (person.getPersonType().equals("luggage")) {
-            System.out.println("Irregular? " + person.getHasIrregularLuggage());
-
-        }
         waitingQueue.add(person);
+        int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
+        scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.SECONDS);
     }
 
     private Person generatePerson() {
