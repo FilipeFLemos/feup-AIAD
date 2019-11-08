@@ -53,7 +53,7 @@ public class InspectorAgent extends AbstractAgent {
         private Person person;
 
         public void action() {
-
+            System.out.println("State " + getAID().getName() + " - " + state + " - distance" + getInspectorDistance());
             if (state == State.IDLE) {
 
                 if (agentQueue.isEmpty()) {
@@ -79,10 +79,14 @@ public class InspectorAgent extends AbstractAgent {
                     }
 
                 });
-            }
+                state = State.IDLE;
+                setInspectorDistance(randomNumber(100));
+            } else if (state == State.MOVING)
+                update();
         }
 
         public void update() {
+            System.out.println("Entrou?");
             try {
                 Thread.sleep(Utils.SECOND);
             } catch (InterruptedException ex) {
@@ -91,6 +95,7 @@ public class InspectorAgent extends AbstractAgent {
             double newDistance = getInspectorDistance() - Utils.INSPECTOR_SPEED;
             newDistance = (newDistance > 0) ? newDistance : 0;
             setInspectorDistance(newDistance);
+            System.out.println(newDistance);
 
         }
     }
