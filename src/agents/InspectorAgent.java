@@ -1,7 +1,11 @@
 package agents;
 
+import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.WakerBehaviour;
+
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorAnswerer;
 
@@ -11,12 +15,11 @@ import java.util.Vector;
 public class InspectorAgent extends AbstractAgent {
 
     private double distance;
-    private boolean isBusy;
 
     public InspectorAgent() {
         state = State.IDLE;
         setPeopleScanAgents(new Vector<>());
-        distance = randomNumber(1000);
+        distance = randomNumber(100);
         System.out.println("Distance " + distance);
     }
 
@@ -34,6 +37,7 @@ public class InspectorAgent extends AbstractAgent {
         addBehaviour(Utils.lateSubscriptionFactoryMethod(this, "scan"));
 
         addBehaviour(new ClosestInspectorAnswerer(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        addBehaviour(new InspectLuggage());
 
     }
 
@@ -41,16 +45,54 @@ public class InspectorAgent extends AbstractAgent {
         return distance;
     }
 
-    // public boolean getIsBusy() {
-    // return isBusy;
-    // }
+    public void setInspectorDistance(double distance) {
+        this.distance = distance;
+    }
 
-    // public void setIsBusy(boolean isBusy) {
-    // this.isBusy = isBusy;
-    // }
+    private class InspectLuggage extends CyclicBehaviour {
+        private Person person;
 
-    // public void toggleIsBusy() {
-    // this.isBusy = !this.isBusy;
-    // }
+        public void action() {
+
+            if (state == State.IDLE) {
+
+                if (agentQueue.isEmpty()) {
+                    block();
+                } else {
+                    state = State.MOVING;
+                    update();
+
+                }
+            } else if (state == State.MOVING && getInspectorDistance() == 0) {
+                state = State.WORKING;
+                System.out.println(myAgent.getLocalName() + ": Going to start inspect the luggage of Person (ID: "
+                        + ((Person) agentQueue.peek()).getId() + ")");
+                myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
+                    @Override
+                    protected void onWake() {
+                        person = (Person) agentQueue.peek();
+                        System.out.println(myAgent.getLocalName() + ": Finished inspecting the luggage of Person (ID: "
+                                + ((Person) agentQueue.peek()).getId() + ")");
+                        state = State.IDLE;
+                        person = null;
+                        agentQueue.poll();
+                    }
+
+                });
+            }
+        }
+
+        public void update() {
+            try {
+                Thread.sleep(Utils.SECOND);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            double newDistance = getInspectorDistance() - Utils.INSPECTOR_SPEED;
+            newDistance = (newDistance > 0) ? newDistance : 0;
+            setInspectorDistance(newDistance);
+
+        }
+    }
 
 }

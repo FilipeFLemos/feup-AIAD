@@ -18,8 +18,8 @@ public class LuggageAgent extends AbstractAgent {
     private Vector<AID> inspectorAgents;
 
     public LuggageAgent() {
-        setPeopleScanAgents(new Vector<>());
         state = State.IDLE;
+        setPeopleScanAgents(new Vector<>());
     }
 
     @Override
@@ -76,7 +76,6 @@ public class LuggageAgent extends AbstractAgent {
                                 protected void onWake() {
                                     person = (Person) agentQueue.peek();
 
-
                                     if (person.getHasIrregularLuggage()) {
                                         state = State.ALLOCATING;
                                         allocateClosestInspector(myAgent);
@@ -94,9 +93,7 @@ public class LuggageAgent extends AbstractAgent {
                 }
             } else if (state == State.ALLOCATING) {
                 if (agentQueue.isEmpty() || !agentQueue.peek().equals(person)) {
-                    System.out.println(myAgent.getLocalName()
-                            + ": Delivered Person (ID: "
-                            + person.getId() + ")");
+                    System.out.println(myAgent.getLocalName() + ": Delivered Person (ID: " + person.getId() + ")");
                     state = State.IDLE;
                     person = null;
 

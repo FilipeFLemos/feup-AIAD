@@ -30,8 +30,10 @@ public class Utils {
     public static int QUEUE_MAX_FREQUENCY = 10;
     public static int MAX_THREADS = 30;
     public static int LUGGAGE_PROCESSING_TIME = 10;
+    public static int INSPECTOR_PROCESSING_TIME = 10;
     public static int REQUERY_DELAY = 1;
     public static int SCANNING_TIME = 5;
+    public static int SECOND = 1000;
     public static float INSPECTOR_SPEED = 1.5f;
 
     /**
@@ -93,4 +95,5 @@ public class Utils {
             return new SubscriptionInitiator(agent, null);
         }
     }
+
 }
