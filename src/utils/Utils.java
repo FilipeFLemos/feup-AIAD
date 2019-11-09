@@ -15,7 +15,8 @@ import utils.contracts.QueueSizeQuery;
 
 import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
-
+import java.awt.Point;
+import java.lang.Math;
 //import utils.contracts.ClosestInspectorQuery.java;
 
 public class Utils {
@@ -35,6 +36,10 @@ public class Utils {
     public static int SCANNING_TIME = 5;
     public static int SECOND = 1000;
     public static float INSPECTOR_SPEED = 1.5f;
+
+    public static Point[] INSPECTOR_AGENTS_LOCATION = new Point[] { new Point(3, 5), new Point(5, 8), new Point(5, 5) };
+    public static Point[] LUGGAGE_AGENTS_LOCATION = new Point[] { new Point(0, 0), new Point(4, 0), new Point(8, 0) };
+    public static Point[] PEOPLE_AGENTS_LOCATION = new Point[] { new Point(7, 7), new Point(7, 0) };
 
     /**
      * Generates a random number.
@@ -85,15 +90,21 @@ public class Utils {
     public static SubscriptionInitiator lateSubscriptionFactoryMethod(Agent agent, String agentType) {
         DFAgentDescription template = Utils.getDFAgentDescriptionTemplate(agentType);
         switch (agentType) {
-        case "luggage":
-            return new LateLuggageAgentSubscription(agent, template);
-        case "scan":
-            return new LateScanAgentSubscription(agent, template);
-        case "inspector":
-            return new LateInspectorAgentSubscription(agent, template);
-        default:
-            return new SubscriptionInitiator(agent, null);
+            case "luggage":
+                return new LateLuggageAgentSubscription(agent, template);
+            case "scan":
+                return new LateScanAgentSubscription(agent, template);
+            case "inspector":
+                return new LateInspectorAgentSubscription(agent, template);
+            default:
+                return new SubscriptionInitiator(agent, null);
         }
+    }
+
+    public static double distance(Point p1, Point p2) {
+        return Math.sqrt(
+                (p2.getY() - p1.getY()) * (p2.getY() - p1.getY()) + (p2.getX() - p1.getX()) * (p2.getX() - p1.getX()));
+
     }
 
 }

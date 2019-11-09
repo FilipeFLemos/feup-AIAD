@@ -76,6 +76,7 @@ public class Launcher {
     private void startAgents() {
         for (int i = 0; i < Utils.NUM_LUGGAGE_AGENTS; i++) {
             LuggageAgent luggageAgent = new LuggageAgent();
+            luggageAgent.setLocation(Utils.LUGGAGE_AGENTS_LOCATION[i]);
             try {
                 mainContainer.acceptNewAgent("luggageControl" + i, luggageAgent).start();
             } catch (StaleProxyException e) {
@@ -86,6 +87,8 @@ public class Launcher {
 
         for (int i = 0; i < Utils.NUM_PEOPLE_AGENTS; i++) {
             PeopleScanAgent peopleScanAgent = new PeopleScanAgent();
+            peopleScanAgent.setLocation(Utils.PEOPLE_AGENTS_LOCATION[i]);
+
             try {
                 mainContainer.acceptNewAgent("peopleScanner" + i, peopleScanAgent).start();
             } catch (StaleProxyException e) {
@@ -96,6 +99,7 @@ public class Launcher {
 
         for (int i = 0; i < Utils.NUM_INSPECTOR_AGENTS; i++) {
             InspectorAgent inspectorAgent = new InspectorAgent();
+            inspectorAgent.setLocation(Utils.INSPECTOR_AGENTS_LOCATION[i]);
             try {
                 mainContainer.acceptNewAgent("inspector" + i, inspectorAgent).start();
             } catch (StaleProxyException e) {
@@ -110,6 +114,12 @@ public class Launcher {
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
+
+        for (InspectorAgent i : inspectorAgents)
+            System.out.println("Inspector (" + i.getLocation().getX() + ", " + i.getLocation().getY() + ")");
+        for (LuggageAgent l : luggageAgents)
+            System.out.println("Luggage (" + l.getLocation().getX() + ", " + l.getLocation().getY() + ")");
+
     }
 
     private void enqueue() {

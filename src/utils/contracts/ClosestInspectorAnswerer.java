@@ -1,5 +1,6 @@
 package utils.contracts;
 
+import agents.AbstractAgent;
 import agents.InspectorAgent;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -9,6 +10,7 @@ import jade.proto.ContractNetResponder;
 import models.Person;
 
 import java.io.IOException;
+import java.awt.Point;
 
 public class ClosestInspectorAnswerer extends ContractNetResponder {
 
@@ -18,12 +20,14 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
 
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
-        InspectorAgent inspectorAgent = (InspectorAgent) myAgent;
+        AbstractAgent a = (AbstractAgent) myAgent;
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
         try {
-            double distance = inspectorAgent.getInspectorDistance();
-            reply.setContentObject(distance);
+            reply.setContentObject(new Point(1, 1));
+            // Aqui precisava de dar setContentObject da location do sender (tipo, o
+            // luggageControl1 dava a location para depois no handleAllReponses, fazer a
+            // distance)
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,12 +46,7 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
         reply.setContent("Will be done");
         try {
             Person person = (Person) accept.getContentObject();
-            // System.out.println(" Accept " + accept.getContentObject());
-            // System.out.println("Person " + person);
             inspectorAgent.enqueue(person);
-            // System.out.println("Agent local name " + myAgent.getLocalName());
-            // System.out.println("Person ID " + person.getId());
-            // System.out.println("From Agent " + cfp.getSender().getLocalName());
             System.out.println(myAgent.getLocalName() + ": I was selected to check the person's (ID: " + person.getId()
                     + ") irregularity from Agent " + cfp.getSender().getLocalName());
         } catch (UnreadableException e) {

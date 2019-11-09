@@ -6,6 +6,7 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import java.awt.Point;
 import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorQuery;
@@ -19,7 +20,14 @@ public class LuggageAgent extends AbstractAgent {
 
     public LuggageAgent() {
         state = State.IDLE;
+        location = new Point(0, 0);
         setPeopleScanAgents(new Vector<>());
+    }
+
+    public LuggageAgent(int x, int y) {
+
+        this();
+        location = new Point(x, y);
     }
 
     @Override

@@ -12,6 +12,7 @@ import utils.Utils;
 
 import java.io.IOException;
 import java.util.Vector;
+import java.awt.Point;
 
 public class ClosestInspectorQuery extends ContractNetInitiator {
 
@@ -41,8 +42,11 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
         for (Object response : responses) {
             double curr = Utils.MAX_INSPECTOR_DISTANCE;
             try {
-                if (null != (Double) ((ACLMessage) response).getContentObject()) {
-                    curr = (Double) ((ACLMessage) response).getContentObject();
+                if (null != (Point) ((ACLMessage) response).getContentObject()) {
+
+                    Point responseDistance = (Point) ((ACLMessage) response).getContentObject();
+                    Point inspectorDistance = inspectorAgent.getLocation();
+                    curr = Utils.distance(responseDistance, inspectorDistance);
                 }
             } catch (UnreadableException e) {
                 e.printStackTrace();
@@ -59,10 +63,13 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
                 ACLMessage msg = current.createReply();
                 if (null != ((ACLMessage) response).getContentObject()) {
 
-                    if (!chosen && (Double) ((ACLMessage) response).getContentObject() == min) {
+                    Point responseDistance = (Point) ((ACLMessage) response).getContentObject();
+                    Point inspectorDistance = inspectorAgent.getLocation();
+                    if (!chosen && Utils.distance(responseDistance, inspectorDistance) == min) {
                         msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                         try {
                             msg.setContentObject(inspectorAgent.getPerson());
+                            inspectorAgent.setInspectorDistance(min);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

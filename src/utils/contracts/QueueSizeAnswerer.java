@@ -50,13 +50,14 @@ public class QueueSizeAnswerer extends ContractNetResponder {
 
         try {
             Person person = (Person) accept.getContentObject();
+            person.setLocation(abstractAgent.getLocation());
             abstractAgent.enqueue(person);
-            System.out.println(myAgent.getLocalName() + ": I was selected to take the next person (ID: " + person.getId() + ") from Agent "
-                    + cfp.getSender().getLocalName());
+            System.out.println(myAgent.getLocalName() + ": I was selected to take the next person (ID: "
+                    + person.getId() + ") from Agent " + cfp.getSender().getLocalName());
+            System.out.println("Distance: "+ person.getLocation().getX() + ", " + person.getLocation().getY() + ")");
         } catch (UnreadableException e) {
             e.printStackTrace();
         }
-
 
         return reply;
     }

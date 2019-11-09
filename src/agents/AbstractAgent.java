@@ -7,6 +7,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import models.Person;
+import java.awt.Point;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -18,6 +19,8 @@ public class AbstractAgent extends Agent {
     Vector<AID> luggageAgents;
     Vector<AID> peopleScanAgents;
     State state;
+    Point location;
+    double distance;
 
     void setServiceDescription(String type) {
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
@@ -73,7 +76,25 @@ public class AbstractAgent extends Agent {
         this.luggageAgents = luggageAgents;
     }
 
-    void processPerson() {
+    public void setLocation(int x, int y) {
+        Point location = new Point(x, y);
+        this.location = location;
+    }
+
+    public void setLocation(Point p) {
+        this.setLocation(p.x, p.y);
+    }
+
+    public Point getLocation() {
+        return this.location;
+    }
+
+    public void setInspectorDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public double getInspectorDistance() {
+        return this.distance;
     }
 
     enum State {
