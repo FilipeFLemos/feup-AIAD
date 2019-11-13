@@ -73,7 +73,7 @@ public class InspectorAgent extends AbstractAgent {
     }
 
     private class InspectLuggage extends CyclicBehaviour {
-        //private long lastUpdateTime = System.currentTimeMillis();
+        private boolean isTick;
 
         public void action() {
             if (state == State.IDLE)
@@ -82,7 +82,7 @@ public class InspectorAgent extends AbstractAgent {
                     block();
                 } else {
                     state = State.MOVING;
-                    //lastUpdateTime = System.currentTimeMillis();
+                    isTick = false;
 
                     Person person = (Person) agentQueue.element();
                     distance = Utils.distance(location,person.getLocation());
@@ -91,16 +91,23 @@ public class InspectorAgent extends AbstractAgent {
             }
             else if (state == State.MOVING)
             {
-//                long timeDifSeconds = (System.currentTimeMillis() - lastUpdateTime)/1000;
-//                lastUpdateTime = System.currentTimeMillis();
-
-                double newDistance = distance - Utils.INSPECTOR_SPEED * 1;
-                if(newDistance > 0 ){
-                    distance = newDistance;
-                }
-                else{
-                    inspectLuggage();
-                    distance = 0;
+                if(!isTick)
+                {
+                    isTick = true;
+                    myAgent.addBehaviour(new WakerBehaviour(myAgent, 10) {
+                        @Override
+                        protected void onWake() {
+                            double newDistance = distance - Utils.INSPECTOR_SPEED * 0.01;
+                            if(newDistance > 0 ){
+                                distance = newDistance;
+                            }
+                            else{
+                                inspectLuggage();
+                                distance = 0;
+                            }
+                            isTick = false;
+                        }
+                    });
                 }
             }
         }
