@@ -8,13 +8,14 @@ public class Person implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private int id;
-    private int waitingTimeInSeconds;
+    private long totalWaitingTime = 0;
+    private long initialTime;
     private PersonType personType;
     private boolean hasIrregularLuggage;
     private Point location;
 
     public Person(PersonType personType, int id) {
-        this.waitingTimeInSeconds = 0;
+        this.initialTime = System.currentTimeMillis();
         this.personType = personType;
         this.location = new Point(0, 0);
         this.id = id;
@@ -22,10 +23,6 @@ public class Person implements Serializable {
         if ((personType.toString()).equals("Luggage")) {
             this.randomizeHasIrregularLuggage();
         }
-    }
-
-    public void increaseWaitingTimeBy(int time) {
-        waitingTimeInSeconds += time;
     }
 
     public PersonType getPersonType() {
@@ -58,12 +55,12 @@ public class Person implements Serializable {
     }
 
     public void stopTimer() {
-
+        totalWaitingTime = (System.currentTimeMillis() - initialTime)/1000;
     }
 
-    public void randomizeHasIrregularLuggage() {
+    private void randomizeHasIrregularLuggage() {
         Random rand = new Random();
-        boolean isIrregular = (rand.nextInt(2) < 1) ? true : false;
+        boolean isIrregular = rand.nextInt(2) < 1;
         setHasIrregularLuggage(isIrregular);
     }
 }

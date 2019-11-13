@@ -20,7 +20,6 @@ public class AbstractAgent extends Agent {
     Vector<AID> peopleScanAgents;
     State state;
     Point location;
-    double distance;
 
     void setServiceDescription(String type) {
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
@@ -76,28 +75,22 @@ public class AbstractAgent extends Agent {
         this.luggageAgents = luggageAgents;
     }
 
-    public void setLocation(int x, int y) {
-        Point location = new Point(x, y);
-        this.location = location;
-    }
-
     public void setLocation(Point p) {
-        this.setLocation(p.x, p.y);
+        this.location = p;
     }
 
     public Point getLocation() {
         return this.location;
     }
 
-    public void setInspectorDistance(double distance) {
-        this.distance = distance;
-    }
-
-    public double getInspectorDistance() {
-        return this.distance;
+    public void setStateIdle() {
+        state = State.IDLE;
     }
 
     enum State {
-        IDLE, WORKING, MOVING, ALLOCATING
+        IDLE,
+        WORKING,
+        MOVING,
+        ALLOCATING
     }
 }

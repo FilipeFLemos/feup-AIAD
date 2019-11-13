@@ -23,7 +23,7 @@ public class Utils {
 
     public static final int NUM_LUGGAGE_AGENTS = 3;
     public static int NUM_PEOPLE_AGENTS = 2;
-    public static int NUM_INSPECTOR_AGENTS = 3;
+    public static int NUM_INSPECTOR_AGENTS = 1;
     public static int MAX_LUGGAGE_CAPACITY = 5;
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
     public static float MAX_INSPECTOR_DISTANCE = 1000f;
@@ -34,8 +34,8 @@ public class Utils {
     public static int INSPECTOR_PROCESSING_TIME = 10;
     public static int REQUERY_DELAY = 1;
     public static int SCANNING_TIME = 5;
-    public static int SECOND = 1000;
-    public static float INSPECTOR_SPEED = 1.5f;
+    public static float INSPECTOR_SPEED = 1.4f;
+    public static double MAX_INSPECTOR_BUSYTIME = 3600;
 
     public static Point[] INSPECTOR_AGENTS_LOCATION = new Point[] { new Point(3, 5), new Point(5, 8), new Point(5, 5) };
     public static Point[] LUGGAGE_AGENTS_LOCATION = new Point[] { new Point(0, 0), new Point(4, 0), new Point(8, 0) };

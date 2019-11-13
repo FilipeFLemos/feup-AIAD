@@ -1,7 +1,5 @@
 package utils.contracts;
 
-import agents.AbstractAgent;
-import agents.InspectorAgent;
 import agents.LuggageAgent;
 import jade.core.AID;
 import jade.core.Agent;
@@ -12,7 +10,6 @@ import utils.Utils;
 
 import java.io.IOException;
 import java.util.Vector;
-import java.awt.Point;
 
 public class ClosestInspectorQuery extends ContractNetInitiator {
 
@@ -25,8 +22,14 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
         Vector<ACLMessage> v = new Vector<>();
         LuggageAgent luggageAgent = (LuggageAgent) myAgent;
 
-        for (AID aid : luggageAgent.getInspectorAgents()) {
+        for (AID aid : luggageAgent.getInspectorAgents())
+        {
             cfp.addReceiver(aid);
+            try {
+                cfp.setContentObject(luggageAgent.getPerson());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         v.add(cfp);
@@ -35,18 +38,15 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
 
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
-        // AbstractAgent abstractAgent = (AbstractAgent) myAgent;
-        AbstractAgent inspectorAgent = (AbstractAgent) myAgent;
+        LuggageAgent luggageAgent = (LuggageAgent) myAgent;
 
-        double min = Utils.MAX_INSPECTOR_DISTANCE;
+        double min = Utils.MAX_INSPECTOR_BUSYTIME;
         for (Object response : responses) {
-            double curr = Utils.MAX_INSPECTOR_DISTANCE;
+            double curr = Utils.MAX_INSPECTOR_BUSYTIME;
             try {
-                if (null != (Point) ((ACLMessage) response).getContentObject()) {
-
-                    Point responseDistance = (Point) ((ACLMessage) response).getContentObject();
-                    Point inspectorDistance = inspectorAgent.getLocation();
-                    curr = Utils.distance(responseDistance, inspectorDistance);
+                if (((ACLMessage) response).getContentObject() != null)
+                {
+                    curr = (Double) ((ACLMessage) response).getContentObject();
                 }
             } catch (UnreadableException e) {
                 e.printStackTrace();
@@ -61,24 +61,25 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
             ACLMessage current = (ACLMessage) response;
             try {
                 ACLMessage msg = current.createReply();
-                if (null != ((ACLMessage) response).getContentObject()) {
-
-                    Point responseDistance = (Point) ((ACLMessage) response).getContentObject();
-                    Point inspectorDistance = inspectorAgent.getLocation();
-                    if (!chosen && Utils.distance(responseDistance, inspectorDistance) == min) {
-                        msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                if (null != ((ACLMessage) response).getContentObject())
+                {
+                    double busyTime = (Double) ((ACLMessage) response).getContentObject();
+                    if (!chosen && busyTime == min)
+                    {
                         try {
-                            msg.setContentObject(inspectorAgent.getPerson());
-                            inspectorAgent.setInspectorDistance(min);
+                            msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                            msg.setContentObject(luggageAgent.getPerson());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         chosen = true;
-                        inspectorAgent.movedPerson();
+                        luggageAgent.movedPerson();
+                        luggageAgent.setStateIdle();
                     }
 
-                    else
+                    else {
                         msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    }
                 }
 
                 acceptances.add(msg);

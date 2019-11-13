@@ -9,21 +9,22 @@ import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorAnswerer;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Vector;
 import java.awt.Point;
 
 public class InspectorAgent extends AbstractAgent {
 
+    private double distance = -1;
+    private Queue tasksTime = new LinkedList<>();
+    private Person lastPersonInQueue = null;
+
     public InspectorAgent() {
         state = State.IDLE;
-        location = new Point(0, 0);
+        location = new Point(30, 30);
         setPeopleScanAgents(new Vector<>());
-    }
-
-    public InspectorAgent(int x, int y) {
-        this();
-        location = new Point(x, y);
     }
 
     public double randomNumber(int i) {
@@ -44,56 +45,84 @@ public class InspectorAgent extends AbstractAgent {
 
     }
 
+    public double getBusyTime(){
+       double time = 0;
+       for(Object taskTime : tasksTime){
+            time += (double) taskTime + Utils.INSPECTOR_PROCESSING_TIME;
+       }
+       return time;
+    }
+
+    public void increaseBusyTime(Person person){
+
+        double time = computeBusyTime(person);
+        tasksTime.add(time);
+        lastPersonInQueue = person;
+    }
+
+    public double computeBusyTime(Person person){
+        double distance;
+        if(tasksTime.isEmpty()){
+            distance = Utils.distance(location, person.getLocation());
+        }
+        else{
+            distance = Utils.distance(person.getLocation(), lastPersonInQueue.getLocation());
+        }
+
+        return Math.floor(distance/Utils.INSPECTOR_SPEED);
+    }
+
     private class InspectLuggage extends CyclicBehaviour {
-        private Person person;
+        //private long lastUpdateTime = System.currentTimeMillis();
 
         public void action() {
-            if (state == State.IDLE) {
-
+            if (state == State.IDLE)
+            {
                 if (agentQueue.isEmpty()) {
                     block();
                 } else {
                     state = State.MOVING;
-                    person = (Person) agentQueue.peek();
-                    System.out.println("Location: " + person.getLocation());
-                    update();
+                    //lastUpdateTime = System.currentTimeMillis();
 
+                    Person person = (Person) agentQueue.element();
+                    distance = Utils.distance(location,person.getLocation());
+                    System.out.println(myAgent.getLocalName() + ": Moving to location: " + person.getLocation());
                 }
-            } else if (state == State.MOVING && getInspectorDistance() == 0) {
-                state = State.WORKING;
-                Person person = ((Person) agentQueue.peek());
-                setLocation(person.getLocation());
-                System.out.println(myAgent.getLocalName() + ": Going to start inspect the luggage of Person (ID: "
-                        + person.getId() + ")");
-                myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
-                    @Override
-                    protected void onWake() {
-                        Person person = (Person) agentQueue.peek();
-                        System.out.println(myAgent.getLocalName() + ": Finished inspecting the luggage of Person (ID: "
-                                + ((Person) agentQueue.peek()).getId() + ")");
-                        state = State.IDLE;
-                        person = null;
-                        agentQueue.poll();
-                    }
+            }
+            else if (state == State.MOVING)
+            {
+//                long timeDifSeconds = (System.currentTimeMillis() - lastUpdateTime)/1000;
+//                lastUpdateTime = System.currentTimeMillis();
 
-                });
-                state = State.IDLE;
-                // setInspectorDistance(randomNumber(100));
-            } else if (state == State.MOVING)
-                update();
+                double newDistance = distance - Utils.INSPECTOR_SPEED * 1;
+                if(newDistance > 0 ){
+                    distance = newDistance;
+                }
+                else{
+                    inspectLuggage();
+                    distance = 0;
+                }
+            }
         }
 
-        public void update() {
-            try {
-                Thread.sleep(Utils.SECOND);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-            double newDistance = getInspectorDistance() - Utils.INSPECTOR_SPEED;
-            newDistance = (newDistance > 0) ? newDistance : 0;
-            setInspectorDistance(newDistance);
-            // System.out.println(newDistance);
 
+        private void inspectLuggage()
+        {
+            state = State.WORKING;
+            Person person = (Person) agentQueue.element();
+            setLocation(person.getLocation());
+            System.out.println(myAgent.getLocalName() + ": Going to start inspect the luggage of Person (ID: "
+                    + person.getId() + ")");
+            myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
+                @Override
+                protected void onWake() {
+                    Person person = (Person) agentQueue.element();
+                    System.out.println(myAgent.getLocalName() + ": Finished inspecting the luggage of Person (ID: "
+                            + person.getId() + ")");
+                    Utils.allocatePersonToBeScanned(myAgent);
+                    tasksTime.poll();
+                }
+            });
         }
     }
 

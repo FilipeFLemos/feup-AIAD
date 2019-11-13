@@ -64,7 +64,6 @@ public class LuggageAgent extends AbstractAgent {
     }
 
     private class ScanLuggage extends CyclicBehaviour {
-        private Person person;
 
         public void action() {
 
@@ -82,31 +81,18 @@ public class LuggageAgent extends AbstractAgent {
                             new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
                                 @Override
                                 protected void onWake() {
-                                    person = (Person) agentQueue.peek();
+                                    Person person = (Person) agentQueue.peek();
 
                                     if (person.getHasIrregularLuggage()) {
-                                        state = State.ALLOCATING;
                                         allocateClosestInspector(myAgent);
                                     } else {
                                         System.out.println(myAgent.getLocalName()
                                                 + ": Finished scanning the luggage of Person (ID: "
                                                 + ((Person) agentQueue.peek()).getId() + ")");
-                                        state = State.IDLE;
-                                        person = null;
-                                        agentQueue.poll();
+                                        Utils.allocatePersonToBeScanned(myAgent);
                                     }
-
                                 }
                             });
-                }
-            } else if (state == State.ALLOCATING) {
-                if (agentQueue.isEmpty() || !agentQueue.peek().equals(person)) {
-                    System.out.println(myAgent.getLocalName() + ": Delivered Person (ID: " + person.getId() + ")");
-                    state = State.IDLE;
-                    person = null;
-
-                } else {
-                    block();
                 }
             }
         }

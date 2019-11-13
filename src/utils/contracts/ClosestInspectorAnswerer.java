@@ -1,6 +1,5 @@
 package utils.contracts;
 
-import agents.AbstractAgent;
 import agents.InspectorAgent;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -10,7 +9,6 @@ import jade.proto.ContractNetResponder;
 import models.Person;
 
 import java.io.IOException;
-import java.awt.Point;
 
 public class ClosestInspectorAnswerer extends ContractNetResponder {
 
@@ -20,20 +18,19 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
 
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
-        AbstractAgent a = (AbstractAgent) myAgent;
+        InspectorAgent inspectorAgent = (InspectorAgent) myAgent;
+
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
         try {
-            reply.setContentObject(new Point(1, 1));
-            // Aqui precisava de dar setContentObject da location do sender (tipo, o
-            // luggageControl1 dava a location para depois no handleAllReponses, fazer a
-            // distance)
-        } catch (IOException e) {
+            Person person  = (Person) cfp.getContentObject();
+            double busyTime = inspectorAgent.getBusyTime() + inspectorAgent.computeBusyTime(person);
+            reply.setContentObject(busyTime);
+        } catch (IOException | UnreadableException e) {
             e.printStackTrace();
         }
 
         return reply;
-
     }
 
     @Override
@@ -43,10 +40,12 @@ public class ClosestInspectorAnswerer extends ContractNetResponder {
 
         ACLMessage reply = accept.createReply();
         reply.setPerformative(ACLMessage.INFORM);
-        reply.setContent("Will be done");
         try {
-            Person person = (Person) accept.getContentObject();
+            Person person = (Person)  accept.getContentObject();
+
+            inspectorAgent.increaseBusyTime(person);
             inspectorAgent.enqueue(person);
+
             System.out.println(myAgent.getLocalName() + ": I was selected to check the person's (ID: " + person.getId()
                     + ") irregularity from Agent " + cfp.getSender().getLocalName());
         } catch (UnreadableException e) {

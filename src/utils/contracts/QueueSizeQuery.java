@@ -83,6 +83,7 @@ public class QueueSizeQuery extends ContractNetInitiator {
                     }
                     chosen = true;
                     abstractAgent.movedPerson();
+                    abstractAgent.setStateIdle();
                 } else {
                     msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
                 }
