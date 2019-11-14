@@ -1,6 +1,6 @@
 package utils.contracts;
 
-import agents.LuggageAgent;
+import agents.AbstractAgent;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.domain.DFService;
@@ -21,11 +21,10 @@ public class LateInspectorAgentSubscription extends SubscriptionInitiator {
             DFAgentDescription[] dfds = DFService.decodeNotification(inform.getContent());
             for (DFAgentDescription dfd : dfds) {
                 AID agent = dfd.getName();
-                LuggageAgent luggageAgent = (LuggageAgent) myAgent;
-
-                if (!luggageAgent.getInspectorAgents().contains(agent)) {
-                    luggageAgent.getInspectorAgents().add(agent);
-                    System.out.println(myAgent.getLocalName() + ": New inspector-agent in town: " + agent.getLocalName() + ", now have " + luggageAgent.getInspectorAgents().size());
+                AbstractAgent abstractAgent = (AbstractAgent) myAgent;
+                if (!abstractAgent.getInspectorAgents().contains(agent)) {
+                    abstractAgent.getInspectorAgents().add(agent);
+                    System.out.println(myAgent.getLocalName() + ": New inspector-agent in town: " + agent.getLocalName() + ", now have " + abstractAgent.getInspectorAgents().size());
                 }
             }
         } catch (FIPAException fe) {

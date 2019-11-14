@@ -18,8 +18,19 @@ public class AbstractAgent extends Agent {
     Queue agentQueue = new LinkedList<Person>();
     Vector<AID> luggageAgents;
     Vector<AID> peopleScanAgents;
+    Vector<AID> inspectorAgents;
     State state;
-    Point location;
+    Point location = new Point(0,0);
+
+    void parseArgs(){
+        Object[] args = getArguments();
+        if(args == null){
+            return;
+        }
+        int x = Integer.parseInt(args[0].toString());
+        int y = Integer.parseInt(args[1].toString());
+        location = new Point(x,y);
+    }
 
     void setServiceDescription(String type) {
         DFAgentDescription dfAgentDescription = new DFAgentDescription();
@@ -75,6 +86,14 @@ public class AbstractAgent extends Agent {
         this.luggageAgents = luggageAgents;
     }
 
+    public Vector<AID> getInspectorAgents() {
+        return inspectorAgents;
+    }
+
+    public void setInspectorAgents(Vector<AID> inspectorAgents) {
+        this.inspectorAgents = inspectorAgents;
+    }
+
     public void setLocation(Point p) {
         this.location = p;
     }
@@ -90,7 +109,6 @@ public class AbstractAgent extends Agent {
     enum State {
         IDLE,
         WORKING,
-        MOVING,
-        ALLOCATING
+        MOVING
     }
 }

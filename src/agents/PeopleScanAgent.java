@@ -16,6 +16,8 @@ public class PeopleScanAgent extends AbstractAgent {
 
     @Override
     protected void setup() {
+        parseArgs();
+
         System.out.println("Hallo! PeopleScan-agent " + getAID().getName() + " is ready.");
         setServiceDescription("scan");
 
@@ -32,7 +34,8 @@ public class PeopleScanAgent extends AbstractAgent {
                     block();
                 } else {
                     state = State.WORKING;
-                    myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.SCANNING_TIME)) {
+                    myAgent.addBehaviour(new WakerBehaviour(myAgent,
+                            Utils.getMilliSeconds(Utils.SCANNING_TIME)) {
                         @Override
                         protected void onWake() {
                             Person person = (Person) agentQueue.poll();

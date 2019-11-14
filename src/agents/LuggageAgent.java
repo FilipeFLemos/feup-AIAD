@@ -6,7 +6,6 @@ import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.WakerBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import java.awt.Point;
 import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorQuery;
@@ -20,19 +19,14 @@ public class LuggageAgent extends AbstractAgent {
 
     public LuggageAgent() {
         state = State.IDLE;
-        location = new Point(0, 0);
         setPeopleScanAgents(new Vector<>());
-    }
-
-    public LuggageAgent(int x, int y) {
-
-        this();
-        location = new Point(x, y);
     }
 
     @Override
     protected void setup() {
-        System.out.println("Hallo! Luggage-agent " + getAID().getName() + " is ready.");
+        parseArgs();
+
+        System.out.println(this.getLocalName() + "Hallo! Luggage-agent " + getAID().getName() + " is ready.");
         setServiceDescription("luggage");
 
         findAvailableAgents();
@@ -73,10 +67,8 @@ public class LuggageAgent extends AbstractAgent {
                     block();
                 } else {
                     state = State.WORKING;
-
                     System.out.println(myAgent.getLocalName() + ": Going to start scanning the luggage of Person (ID: "
                             + ((Person) agentQueue.peek()).getId() + ")");
-
                     myAgent.addBehaviour(
                             new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
                                 @Override

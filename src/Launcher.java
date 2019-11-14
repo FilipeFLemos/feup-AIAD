@@ -50,62 +50,47 @@ public class Launcher {
 
         int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
         scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.SECONDS);
-        /*
-         * while (!stopSystem) { int randomWait = Utils.getRandom(0,
-         * Utils.QUEUE_MAX_FREQUENCY); scheduledExecutorService.schedule(this::enqueue,
-         * randomWait, TimeUnit.SECONDS); try {
-         * Thread.sleep(Utils.getMilliSeconds(randomWait)); } catch
-         * (InterruptedException e) { e.printStackTrace(); } }
-         */
     }
 
     public static void main(String[] args) {
         Runtime rt = Runtime.instance();
 
         Profile p1 = new ProfileImpl();
-        // p1.setParameter(...);
         mainContainer = rt.createMainContainer(p1);
 
-        Profile p2 = new ProfileImpl();
-        // p2.setParameter(...);
-        ContainerController container = rt.createAgentContainer(p2);
-
-        Launcher l = new Launcher();
+        new Launcher();
     }
 
     private void startAgents() {
+        Object[] args = new Object[2];
+        args[0] = 0;
+        args[1] = 0;
+
         for (int i = 0; i < Utils.NUM_LUGGAGE_AGENTS; i++) {
-            LuggageAgent luggageAgent = new LuggageAgent();
-            luggageAgent.setLocation(Utils.LUGGAGE_AGENTS_LOCATION[i]);
+
             try {
-                mainContainer.acceptNewAgent("luggageControl" + i, luggageAgent).start();
+                mainContainer.createNewAgent("luggageControl" + i, "agents.LuggageAgent", args).start();
             } catch (StaleProxyException e) {
                 e.printStackTrace();
             }
-            luggageAgents.add(luggageAgent);
         }
 
         for (int i = 0; i < Utils.NUM_PEOPLE_AGENTS; i++) {
-            PeopleScanAgent peopleScanAgent = new PeopleScanAgent();
-            peopleScanAgent.setLocation(Utils.PEOPLE_AGENTS_LOCATION[i]);
 
             try {
-                mainContainer.acceptNewAgent("peopleScanner" + i, peopleScanAgent).start();
+                mainContainer.createNewAgent("peopleScanner" + i, "agents.PeopleScanAgent", args).start();
             } catch (StaleProxyException e) {
                 e.printStackTrace();
             }
-            peopleScanAgents.add(peopleScanAgent);
         }
 
         for (int i = 0; i < Utils.NUM_INSPECTOR_AGENTS; i++) {
-            InspectorAgent inspectorAgent = new InspectorAgent();
-            inspectorAgent.setLocation(Utils.INSPECTOR_AGENTS_LOCATION[i]);
+
             try {
-                mainContainer.acceptNewAgent("inspector" + i, inspectorAgent).start();
+                mainContainer.createNewAgent("inspector" + i, "agents.InspectorAgent", args).start();
             } catch (StaleProxyException e) {
                 e.printStackTrace();
             }
-            inspectorAgents.add(inspectorAgent);
         }
 
         queueManagerAgent = new QueueManagerAgent();
@@ -114,12 +99,6 @@ public class Launcher {
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
-
-        for (InspectorAgent i : inspectorAgents)
-            System.out.println("Inspector (" + i.getLocation().getX() + ", " + i.getLocation().getY() + ")");
-        for (LuggageAgent l : luggageAgents)
-            System.out.println("Luggage (" + l.getLocation().getX() + ", " + l.getLocation().getY() + ")");
-
     }
 
     private void enqueue() {
@@ -131,7 +110,7 @@ public class Launcher {
     }
 
     private Person generatePerson() {
-        Person person = null;
+        Person person;
         int randomPersonType = Utils.getRandom(0, 4);
         switch (randomPersonType) {
         case 0:
@@ -148,6 +127,10 @@ public class Launcher {
     private void allocatePerson() {
         while (!stopSystem) {
 
+            if(!queueManagerAgent.isSystemReady()){
+                continue;
+            }
+
             if (!waitingQueue.isEmpty() && queueManagerAgent.isQueueEmpty()) {
                 Person person = (Person) waitingQueue.poll();
                 if (person == null) {
@@ -155,16 +138,16 @@ public class Launcher {
                 }
                 queueManagerAgent.enqueue(person);
                 switch (person.getPersonType()) {
-                case Empty:
-                    System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: "
-                            + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
-                    Utils.allocatePersonToBeScanned(queueManagerAgent);
-                    break;
-                case Luggage:
-                    System.out.println(queueManagerAgent.getLocalName() + ": The person with luggage (ID: "
-                            + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
-                    queueManagerAgent.allocateLuggage();
-                    break;
+                    case Empty:
+                        System.out.println(queueManagerAgent.getLocalName() + ": The person without luggage (ID: "
+                                + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
+                        Utils.allocatePersonToBeScanned(queueManagerAgent);
+                        break;
+                    case Luggage:
+                        System.out.println(queueManagerAgent.getLocalName() + ": The person with luggage (ID: "
+                                + person.getId() + ") is being allocated..." + queueManagerAgent.getPerson().getId());
+                        queueManagerAgent.allocateLuggage();
+                        break;
                 }
             }
 

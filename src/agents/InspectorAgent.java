@@ -11,30 +11,24 @@ import utils.contracts.ClosestInspectorAnswerer;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Vector;
-import java.awt.Point;
 
 public class InspectorAgent extends AbstractAgent {
 
-    private double distance = -1;
     private Queue tasksTime = new LinkedList<>();
     private Person lastPersonInQueue = null;
 
     public InspectorAgent() {
         state = State.IDLE;
-        location = new Point(30, 30);
         setPeopleScanAgents(new Vector<>());
-    }
-
-    public double randomNumber(int i) {
-        Random rand = new Random();
-        return Math.round((rand.nextFloat() * i) * 100.0) / 100.0;
     }
 
     @Override
     protected void setup() {
+        parseArgs();
+
         System.out.println("Hallo! Inspector-agent " + getAID().getName() + " is ready.");
+        System.out.println("Started at location: " + location);
         setServiceDescription("inspector");
 
         peopleScanAgents = Utils.findAvailableAgents(this, "scan");
@@ -73,9 +67,11 @@ public class InspectorAgent extends AbstractAgent {
     }
 
     private class InspectLuggage extends CyclicBehaviour {
+        private double distance = -1;
         private boolean isTick;
 
         public void action() {
+
             if (state == State.IDLE)
             {
                 if (agentQueue.isEmpty()) {
