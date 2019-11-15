@@ -41,9 +41,28 @@ public class AbstractAgent extends Agent {
         serviceDescription.setName(getLocalName());
         dfAgentDescription.addServices(serviceDescription);
         try {
-            DFService.register(this, dfAgentDescription);
+            DFAgentDescription[] dfds = DFService.search(this, dfAgentDescription);
+            if(dfds.length >= 1) {
+                DFService.modify(this, dfAgentDescription);
+            } else {
+                DFService.register(this, dfAgentDescription);
+            }
         } catch (FIPAException fe) {
-            fe.printStackTrace();
+            try {
+                DFService.deregister(this);
+                DFService.register(this,dfAgentDescription);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    protected void takeDown() {
+        try {
+            DFService.deregister(this);
+        } catch (FIPAException e) {
+            e.printStackTrace();
         }
     }
 
