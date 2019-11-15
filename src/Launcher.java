@@ -23,9 +23,6 @@ import static utils.Utils.MAX_THREADS;
 public class Launcher {
 
     private static ContainerController mainContainer;
-    private ArrayList<LuggageAgent> luggageAgents;
-    private ArrayList<PeopleScanAgent> peopleScanAgents;
-    private ArrayList<InspectorAgent> inspectorAgents;
     private QueueManagerAgent queueManagerAgent;
     private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(MAX_THREADS);
     private Queue waitingQueue;
@@ -33,9 +30,6 @@ public class Launcher {
     private int personId = 0;
 
     public Launcher() {
-        luggageAgents = new ArrayList<>();
-        peopleScanAgents = new ArrayList<>();
-        inspectorAgents = new ArrayList<>();
         waitingQueue = new LinkedList<Person>();
         stopSystem = false;
 
@@ -103,7 +97,7 @@ public class Launcher {
 
     private void enqueue() {
         Person person = generatePerson();
-        System.out.println("Person Type: " + person.getPersonType());
+        System.out.println("queueManager: A Person " + person.getPersonType() + " has joined the Queue!");
         waitingQueue.add(person);
         int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
         scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.SECONDS);

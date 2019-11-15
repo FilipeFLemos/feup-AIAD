@@ -73,6 +73,9 @@ public class ClosestInspectorQuery extends ContractNetInitiator {
                             e.printStackTrace();
                         }
                         chosen = true;
+                        System.out.println(myAgent.getLocalName() + ": Person with ID " +
+                                luggageAgent.getPerson().getId() + " was allocated to Agent " + current.getSender().getLocalName());
+
                         luggageAgent.movedPerson();
                         luggageAgent.setStateIdle();
                     }

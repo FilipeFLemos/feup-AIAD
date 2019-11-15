@@ -40,7 +40,8 @@ public class PeopleScanAgent extends AbstractAgent {
                         protected void onWake() {
                             Person person = (Person) agentQueue.poll();
                             person.stopTimer();
-                            System.out.println("Finished scanning");
+                            System.out.println(myAgent.getLocalName() + ": Finished scanning Person (ID: "
+                                    + person.getId() + ")");
                             state = State.IDLE;
                         }
                     });

@@ -76,6 +76,9 @@ public class LuggageAgent extends AbstractAgent {
                                     Person person = (Person) agentQueue.peek();
 
                                     if (person.getHasIrregularLuggage()) {
+                                        System.out.println(myAgent.getLocalName()
+                                                + ": There is something shady with the luggage of Person (ID: "
+                                                + ((Person) agentQueue.peek()).getId() + ")");
                                         allocateClosestInspector(myAgent);
                                     } else {
                                         System.out.println(myAgent.getLocalName()

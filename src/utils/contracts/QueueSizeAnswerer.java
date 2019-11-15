@@ -40,6 +40,13 @@ public class QueueSizeAnswerer extends ContractNetResponder {
     }
 
     @Override
+    protected void handleOutOfSequence(ACLMessage cfp) {
+        ACLMessage reply = cfp.createReply();
+        reply.setPerformative(ACLMessage.REFUSE);
+        myAgent.send(reply);
+     }
+
+    @Override
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
 
         AbstractAgent abstractAgent = ((AbstractAgent) myAgent);
@@ -54,7 +61,6 @@ public class QueueSizeAnswerer extends ContractNetResponder {
             abstractAgent.enqueue(person);
             System.out.println(myAgent.getLocalName() + ": I was selected to take the next person (ID: "
                     + person.getId() + ") from Agent " + cfp.getSender().getLocalName());
-            System.out.println("Distance: "+ person.getLocation().getX() + ", " + person.getLocation().getY() + ")");
         } catch (UnreadableException e) {
             e.printStackTrace();
         }
