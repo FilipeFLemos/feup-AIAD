@@ -27,7 +27,7 @@ public class Utils {
     public static int NUM_PEOPLE_AGENTS = 0;
     public static int NUM_INSPECTOR_AGENTS = 0;
 
-    public static int MAX_LUGGAGE_CAPACITY = 1;
+    public static int MAX_LUGGAGE_CAPACITY = 4;
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
     public static double MAX_INSPECTOR_BUSYTIME = 3600;
 
