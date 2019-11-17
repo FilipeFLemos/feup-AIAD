@@ -58,6 +58,10 @@ public class Person implements Serializable {
         totalWaitingTime = (System.currentTimeMillis() - initialTime)/1000;
     }
 
+    public long getTotalWaitingTime() {
+        return totalWaitingTime;
+    }
+
     private void randomizeHasIrregularLuggage() {
         Random rand = new Random();
         boolean isIrregular = rand.nextInt(2) < 1;

@@ -42,6 +42,8 @@ public class PeopleScanAgent extends AbstractAgent {
                             person.stopTimer();
                             System.out.println(myAgent.getLocalName() + ": Finished scanning Person (ID: "
                                     + person.getId() + ")");
+                            System.out.println(myAgent.getLocalName() + ": Person ID: "
+                                    + person.getId() + " spent " +person.getTotalWaitingTime() + " seconds on the system!");
                             state = State.IDLE;
                         }
                     });
