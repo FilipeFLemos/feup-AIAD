@@ -9,6 +9,7 @@ import models.Person;
 import utils.Utils;
 import utils.contracts.ClosestInspectorAnswerer;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Vector;
@@ -75,6 +76,7 @@ public class InspectorAgent extends AbstractAgent {
             if (state == State.IDLE)
             {
                 if (agentQueue.isEmpty()) {
+                    setRandomLocation();
                     block();
                 } else {
                     state = State.MOVING;
@@ -108,6 +110,11 @@ public class InspectorAgent extends AbstractAgent {
             }
         }
 
+        private void setRandomLocation() {
+            int x = Utils.getRandom(0, Utils.MAX_RANDOM_COORD);
+            int y = Utils.getRandom(0, Utils.MAX_RANDOM_COORD);
+            location = new Point(x,y);
+        }
 
         private void inspectLuggage()
         {

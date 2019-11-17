@@ -1,5 +1,7 @@
 package models;
 
+import utils.Utils;
+
 import java.io.Serializable;
 import java.util.Random;
 import java.awt.Point;
@@ -64,7 +66,7 @@ public class Person implements Serializable {
 
     private void randomizeHasIrregularLuggage() {
         Random rand = new Random();
-        boolean isIrregular = rand.nextInt(2) < 1;
+        boolean isIrregular = rand.nextInt(101) < Utils.PROBABILITY_IRREGULAR;
         setHasIrregularLuggage(isIrregular);
     }
 }

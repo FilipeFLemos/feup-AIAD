@@ -17,29 +17,29 @@ import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
 import java.awt.Point;
 import java.lang.Math;
-//import utils.contracts.ClosestInspectorQuery.java;
 
 public class Utils {
+
+    public static int MAX_THREADS = 30;
+    public static int REQUERY_DELAY = 1;
 
     public static final int NUM_LUGGAGE_AGENTS = 0;
     public static int NUM_PEOPLE_AGENTS = 0;
     public static int NUM_INSPECTOR_AGENTS = 0;
+
     public static int MAX_LUGGAGE_CAPACITY = 1;
     public static int MAX_PEOPLE_QUEUE_SIZE = 100;
-    public static float MAX_INSPECTOR_DISTANCE = 1000f;
-    public static int QUEUE_MIN_FREQUENCY = 5;
-    public static int QUEUE_MAX_FREQUENCY = 10;
-    public static int MAX_THREADS = 30;
-    public static int LUGGAGE_PROCESSING_TIME = 10;
-    public static int INSPECTOR_PROCESSING_TIME = 10;
-    public static int REQUERY_DELAY = 1;
-    public static int SCANNING_TIME = 5;
-    public static float INSPECTOR_SPEED = 1.4f;
     public static double MAX_INSPECTOR_BUSYTIME = 3600;
 
-    public static Point[] INSPECTOR_AGENTS_LOCATION = new Point[] { new Point(3, 5), new Point(5, 8), new Point(5, 5) };
-    public static Point[] LUGGAGE_AGENTS_LOCATION = new Point[] { new Point(0, 0), new Point(4, 0), new Point(8, 0) };
-    public static Point[] PEOPLE_AGENTS_LOCATION = new Point[] { new Point(7, 7), new Point(7, 0) };
+    public static int LUGGAGE_PROCESSING_TIME = 10;
+    public static int INSPECTOR_PROCESSING_TIME = 10;
+    public static float INSPECTOR_SPEED = 1.4f;
+    public static int SCANNING_TIME = 5;
+
+    public static int QUEUE_MIN_FREQUENCY = 5;
+    public static int QUEUE_MAX_FREQUENCY = 10;
+    public static int MAX_RANDOM_COORD = 20;
+    public static int PROBABILITY_IRREGULAR = 50;
 
     /**
      * Generates a random number.
