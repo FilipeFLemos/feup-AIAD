@@ -9,6 +9,7 @@ O trabalho tem como objectivo criar um sistema para gestão de uso de um conjunt
 - Número de postos de controlo de pessoa
 - Número de inspectores de mala
 - Tempo de verificação de mala
+- Tempo de inspecção de mala
 - Tempo de verificação de uma pessoa
 - Capacidade máxima dos postos de controlo de mala
 - Probabilidade de mala/pessoa irregular
