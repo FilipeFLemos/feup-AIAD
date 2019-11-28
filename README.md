@@ -13,4 +13,4 @@ O trabalho tem como objectivo criar um sistema para gestão de uso de um conjunt
 - Probabilidade de aparecimento de pessoas na fila
 
 ### Variável dependente
-- Tempo médio total do sistema
+- Tempo médio total de espera no sistema
