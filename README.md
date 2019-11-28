@@ -13,8 +13,7 @@ O trabalho tem como objectivo criar um sistema para gestão de uso de um conjunt
 - Tempo de verificação de uma pessoa
 - Capacidade máxima dos postos de controlo de mala
 - Probabilidade de mala/pessoa irregular
-- Probabilidade de aparecimento de pessoas na fila
-- Velocidade do inspector
+- Frequência de aparecimento de pessoas na fila
 
 ### Variável dependente
 - Tempo médio total de espera no sistema
