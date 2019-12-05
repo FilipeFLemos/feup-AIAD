@@ -57,7 +57,7 @@ public class Person implements Serializable {
     }
 
     public void stopTimer() {
-        totalWaitingTime = (System.currentTimeMillis() - initialTime)/1000;
+        totalWaitingTime = (System.currentTimeMillis() - initialTime);
     }
 
     public long getTotalWaitingTime() {

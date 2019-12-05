@@ -22,11 +22,18 @@ public class InspectorAgent extends AbstractAgent {
     public InspectorAgent() {
         state = State.IDLE;
         setPeopleScanAgents(new Vector<>());
+        setRandomLocation();
+    }
+
+    public InspectorAgent(int x, int y) {
+        state = State.IDLE;
+        setPeopleScanAgents(new Vector<>());
+        location = new Point(x,y);
     }
 
     @Override
     protected void setup() {
-        parseArgs();
+        //parseArgs();
 
         System.out.println("Hallo! Inspector-agent " + getAID().getName() + " is ready.");
         System.out.println("Started at location: " + location);
@@ -65,6 +72,12 @@ public class InspectorAgent extends AbstractAgent {
         }
 
         return Math.floor(distance/Utils.INSPECTOR_SPEED);
+    }
+
+    private void setRandomLocation() {
+        int x = Utils.getRandom(0, Utils.MAX_RANDOM_COORD);
+        int y = Utils.getRandom(20, Utils.MAX_RANDOM_COORD);
+        location = new Point(x,y);
     }
 
     private class InspectLuggage extends CyclicBehaviour {
@@ -110,12 +123,6 @@ public class InspectorAgent extends AbstractAgent {
             }
         }
 
-        private void setRandomLocation() {
-            int x = Utils.getRandom(0, Utils.MAX_RANDOM_COORD);
-            int y = Utils.getRandom(0, Utils.MAX_RANDOM_COORD);
-            location = new Point(x,y);
-        }
-
         private void inspectLuggage()
         {
             state = State.WORKING;
@@ -123,7 +130,7 @@ public class InspectorAgent extends AbstractAgent {
             setLocation(person.getLocation());
             System.out.println(myAgent.getLocalName() + ": Going to start inspect the luggage of Person (ID: "
                     + person.getId() + ")");
-            myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
+            myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.LUGGAGE_PROCESSING_TIME) {
                 @Override
                 protected void onWake() {
                     Person person = (Person) agentQueue.element();

@@ -8,15 +8,25 @@ import models.Person;
 import utils.Utils;
 import utils.contracts.QueueSizeAnswerer;
 
+import java.awt.*;
+
 public class PeopleScanAgent extends AbstractAgent {
+
+    public int totalTime = 0;
+    public int numPeople = 0;
 
     public PeopleScanAgent() {
         state = State.IDLE;
     }
 
+    public PeopleScanAgent(int x, int y){
+        state = State.IDLE;
+        location = new Point(x,y);
+    }
+
     @Override
     protected void setup() {
-        parseArgs();
+        //parseArgs();
 
         System.out.println("Hallo! PeopleScan-agent " + getAID().getName() + " is ready.");
         setServiceDescription("scan");
@@ -34,16 +44,18 @@ public class PeopleScanAgent extends AbstractAgent {
                     block();
                 } else {
                     state = State.WORKING;
-                    myAgent.addBehaviour(new WakerBehaviour(myAgent,
-                            Utils.getMilliSeconds(Utils.SCANNING_TIME)) {
+                    myAgent.addBehaviour(new WakerBehaviour(myAgent,Utils.SCANNING_TIME) {
                         @Override
                         protected void onWake() {
                             Person person = (Person) agentQueue.poll();
                             person.stopTimer();
+                            int time = (int) person.getTotalWaitingTime();
+                            totalTime += time;
+                            numPeople++;
                             System.out.println(myAgent.getLocalName() + ": Finished scanning Person (ID: "
                                     + person.getId() + ")");
                             System.out.println(myAgent.getLocalName() + ": Person ID: "
-                                    + person.getId() + " spent " +person.getTotalWaitingTime() + " seconds on the system!");
+                                    + person.getId() + " spent " +time + " seconds on the system!");
                             state = State.IDLE;
                         }
                     });

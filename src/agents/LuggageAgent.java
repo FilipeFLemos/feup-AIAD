@@ -11,6 +11,7 @@ import utils.Utils;
 import utils.contracts.ClosestInspectorQuery;
 import utils.contracts.QueueSizeAnswerer;
 
+import java.awt.*;
 import java.util.Vector;
 
 public class LuggageAgent extends AbstractAgent {
@@ -22,9 +23,15 @@ public class LuggageAgent extends AbstractAgent {
         setPeopleScanAgents(new Vector<>());
     }
 
+    public LuggageAgent(int x, int y){
+        state = State.IDLE;
+        setPeopleScanAgents(new Vector<>());
+        location = new Point(x,y);
+    }
+
     @Override
     protected void setup() {
-        parseArgs();
+        //parseArgs();
 
         System.out.println(this.getLocalName() + "Hallo! Luggage-agent " + getAID().getName() + " is ready.");
         setServiceDescription("luggage");
@@ -70,7 +77,7 @@ public class LuggageAgent extends AbstractAgent {
                     System.out.println(myAgent.getLocalName() + ": Going to start scanning the luggage of Person (ID: "
                             + ((Person) agentQueue.peek()).getId() + ")");
                     myAgent.addBehaviour(
-                            new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
+                            new WakerBehaviour(myAgent, Utils.LUGGAGE_PROCESSING_TIME) {
                                 @Override
                                 protected void onWake() {
                                     Person person = (Person) agentQueue.peek();

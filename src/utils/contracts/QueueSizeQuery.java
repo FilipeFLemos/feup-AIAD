@@ -97,15 +97,15 @@ public class QueueSizeQuery extends ContractNetInitiator {
         }
 
         if (min == maxQueueSize) {
-            System.out.println(myAgent.getLocalName() + ": All Luggage Agents are busy (Can't allocate Person with ID: " +
-                    abstractAgent.getPerson().getId() + "). Going to retry in a few seconds...");
+            /*System.out.println(myAgent.getLocalName() + ": All Luggage Agents are busy (Can't allocate Person with ID: " +
+                    abstractAgent.getPerson().getId() + "). Going to retry in a few seconds...");*/
             rerunBehaviour();
         }
     }
 
     private void rerunBehaviour() {
 
-        myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.getMilliSeconds(Utils.LUGGAGE_PROCESSING_TIME)) {
+        myAgent.addBehaviour(new WakerBehaviour(myAgent, Utils.LUGGAGE_PROCESSING_TIME) {
             @Override
             protected void onWake() {
                 myAgent.addBehaviour(new QueueSizeQuery(myAgent, msg, agentType));

@@ -23,23 +23,33 @@ public class Utils {
     public static int MAX_THREADS = 30;
     public static int REQUERY_DELAY = 1;
 
-    public static final int NUM_LUGGAGE_AGENTS = 0;
+    /**
+     * Start of Independent Variables
+     */
+    public static int NUM_LUGGAGE_AGENTS = 0;
     public static int NUM_PEOPLE_AGENTS = 0;
     public static int NUM_INSPECTOR_AGENTS = 0;
 
-    public static int MAX_LUGGAGE_CAPACITY = 4;
-    public static int MAX_PEOPLE_QUEUE_SIZE = 100;
-    public static double MAX_INSPECTOR_BUSYTIME = 3600;
-
     public static int LUGGAGE_PROCESSING_TIME = 10;
     public static int INSPECTOR_PROCESSING_TIME = 10;
-    public static float INSPECTOR_SPEED = 1.4f;
     public static int SCANNING_TIME = 5;
 
-    public static int QUEUE_MIN_FREQUENCY = 5;
-    public static int QUEUE_MAX_FREQUENCY = 10;
-    public static int MAX_RANDOM_COORD = 20;
+    public static int MAX_LUGGAGE_CAPACITY = 4;
+
     public static int PROBABILITY_IRREGULAR = 50;
+    public static int QUEUE_MAX_FREQUENCY = 10;
+
+    /**
+     * End of Independent Variables
+     */
+
+    public static double MAX_INSPECTOR_BUSYTIME = 3600;
+    public static float INSPECTOR_SPEED = 1400f;
+
+    public static int MAX_RANDOM_COORD = 100;
+
+
+    public static int MAX_PEOPLE_QUEUE_SIZE = 1000;
 
     /**
      * Generates a random number.
