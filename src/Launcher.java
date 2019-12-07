@@ -11,6 +11,9 @@ import models.Person;
 import models.PersonType;
 import utils.Utils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -29,10 +32,12 @@ public class Launcher {
     private boolean stopSystem;
     private int personId = 0;
     private ArrayList<PeopleScanAgent> peopleScanAgents;
+    private ArrayList<InspectorAgent> inspectorAgents;
+    private ArrayList<LuggageAgent> luggageAgents;
+    private Runtime rt;
+    private Profile p1;
 
     public Launcher() {
-
-        stopSystem = false;
         resetSystem();
     }
 
@@ -41,14 +46,13 @@ public class Launcher {
     }
 
     public void resetSystem(){
-        Runtime rt = Runtime.instance();
-        Profile p1 = new ProfileImpl();
-        mainContainer = rt.createMainContainer(p1);
         waitingQueue = new LinkedList<Person>();
-        peopleScanAgents = new ArrayList<>();
-
         randomIndependentVars();
+        stopSystem = false;
 
+        rt = Runtime.instance();
+        p1 = new ProfileImpl();
+        mainContainer = rt.createMainContainer(p1);
         try {
             mainContainer.acceptNewAgent("myRMA", new jade.tools.rma.rma()).start();
         } catch (StaleProxyException e) {
@@ -64,7 +68,7 @@ public class Launcher {
         long initTime = System.currentTimeMillis();
         while(true){
             long time = System.currentTimeMillis();
-            if(time > initTime + 1000){
+            if(time > initTime + 5000){
                 stopSystem = true;
                 break;
             }
@@ -76,10 +80,45 @@ public class Launcher {
     private void calcAverageTime()
     {
         System.out.println("Finito");
-        //TODO: calcular tempo
-        //TODO: Guardar no ficheiro
+        int numPersons = 0;
+        int totalTime = 0;
 
-        scheduledExecutorService.schedule(this::resetSystem, 0, TimeUnit.MILLISECONDS);
+        for(PeopleScanAgent peopleScanAgent : peopleScanAgents){
+            numPersons += peopleScanAgent.numPeople;
+            totalTime += peopleScanAgent.totalTime;
+        }
+
+        int averageTime = totalTime/numPersons;
+
+        try {
+            FileWriter fw = new FileWriter(fileName, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            String line = Utils.NUM_LUGGAGE_AGENTS + "," + Utils.NUM_PEOPLE_AGENTS + "," + Utils.NUM_INSPECTOR_AGENTS + "," + Utils.LUGGAGE_PROCESSING_TIME + "," + Utils.INSPECTOR_PROCESSING_TIME + "," + Utils.INSPECTOR_PROCESSING_TIME + "," + Utils.SCANNING_TIME + "," + Utils.MAX_LUGGAGE_CAPACITY + "," + Utils.PROBABILITY_IRREGULAR + "," + Utils.QUEUE_MAX_FREQUENCY + "," + averageTime;
+            bw.write(line);
+            bw.newLine();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        killAgents();
+        scheduledExecutorService.schedule(this::resetSystem, 100, TimeUnit.MILLISECONDS);
+    }
+
+    private void killAgents(){
+        for (PeopleScanAgent agent : peopleScanAgents) {
+            agent.takeDown();
+        }
+
+        for (LuggageAgent agent : luggageAgents) {
+            agent.takeDown();
+        }
+
+        for (InspectorAgent agent : inspectorAgents) {
+            agent.takeDown();
+        }
+
+        queueManagerAgent.takeDown();
     }
 
     private void randomIndependentVars(){
@@ -87,20 +126,20 @@ public class Launcher {
         NUM_INSPECTOR_AGENTS = Utils.getRandom(1, 5);
         NUM_PEOPLE_AGENTS = Utils.getRandom(1, 5);
 
-        LUGGAGE_PROCESSING_TIME = Utils.getRandom(5, 10);
-        INSPECTOR_PROCESSING_TIME = Utils.getRandom(5, 10);
+        LUGGAGE_PROCESSING_TIME = Utils.getRandom(5, 15);
+        INSPECTOR_PROCESSING_TIME = Utils.getRandom(5, 15);
         SCANNING_TIME = Utils.getRandom(5, 10);
 
         MAX_LUGGAGE_CAPACITY = Utils.getRandom(1, 5);
 
         PROBABILITY_IRREGULAR = Utils.getRandom(0, 100);
-        QUEUE_MAX_FREQUENCY = Utils.getRandom(5, 15);
+        QUEUE_MAX_FREQUENCY = Utils.getRandom(1, 10);
     }
 
     private void startAgents() {
-        Object[] args = new Object[2];
-        args[0] = 0;
-        args[1] = 0;
+        peopleScanAgents = new ArrayList<>();
+        luggageAgents = new ArrayList<>();
+        inspectorAgents = new ArrayList<>();
 
         int xL = 0;
         int yL = 15;
@@ -115,6 +154,7 @@ public class Launcher {
             }
 
             xL += 5;
+            luggageAgents.add(luggageAgent);
         }
 
         for (int i = 0; i < Utils.NUM_PEOPLE_AGENTS; i++) {
@@ -131,11 +171,14 @@ public class Launcher {
 
         for (int i = 0; i < Utils.NUM_INSPECTOR_AGENTS; i++) {
 
+            InspectorAgent inspectorAgent = new InspectorAgent();
             try {
-                mainContainer.createNewAgent("inspector" + i, "agents.InspectorAgent", args).start();
+                mainContainer.acceptNewAgent("inspector" + i, inspectorAgent).start();
             } catch (StaleProxyException e) {
                 e.printStackTrace();
             }
+
+            inspectorAgents.add(inspectorAgent);
         }
 
         queueManagerAgent = new QueueManagerAgent();
@@ -150,8 +193,7 @@ public class Launcher {
         Person person = generatePerson();
         //System.out.println("queueManager: A Person " + person.getPersonType() + " has joined the Queue!");
         waitingQueue.add(person);
-        int randomWait = Utils.getRandom(0, Utils.QUEUE_MAX_FREQUENCY);
-        scheduledExecutorService.schedule(this::enqueue, randomWait, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.schedule(this::enqueue, Utils.QUEUE_MAX_FREQUENCY, TimeUnit.MILLISECONDS);
     }
 
     private Person generatePerson() {

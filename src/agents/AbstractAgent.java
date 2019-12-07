@@ -58,7 +58,7 @@ public class AbstractAgent extends Agent {
     }
 
     @Override
-    protected void takeDown() {
+    public void takeDown() {
         try {
             DFService.deregister(this);
         } catch (FIPAException e) {

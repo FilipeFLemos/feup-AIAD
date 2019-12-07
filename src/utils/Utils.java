@@ -51,6 +51,8 @@ public class Utils {
 
     public static int MAX_PEOPLE_QUEUE_SIZE = 1000;
 
+    public static String fileName = "data.txt";
+
     /**
      * Generates a random number.
      *
