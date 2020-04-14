@@ -1,4 +1,4 @@
-# AIAD
+# feup-AIAD
 
 ## Trabalho Prático 1
 
